@@ -1,6 +1,6 @@
 # C++ calculator in raylib
 
-This is a simple calculator not intended for professional use.
+This is a simple calculator created as a project.
 
 A C++ project using raylib. 
 
