@@ -1,16 +1,15 @@
 #pragma once
-
-
+#include "raylib.h"
 
 class Button
 {
 public:
-	
+
 	Color getColour() const { return m_colour; }
+	const std::string& getText() const { return m_text; }
 	
-	
-	Button(int x, int y, int width, int height, const std::string& text, Color colour = BLUE)
-		:m_x{ x }, m_y{ y }, m_width{ width }, m_height{height}, m_colour{colour}, m_text{text}
+	Button(int x, int y, int width, int height, const std::string& text, Color colour = { 47, 55, 71, 255 }, Color textColour = RAYWHITE)
+		:m_x{ x }, m_y{ y }, m_width{ width }, m_height{height},  m_text{text}, m_buttonColour{ colour }, m_textColour{textColour}
 	{
 
 	}
@@ -23,17 +22,23 @@ public:
 		else
 			return false;
 	}
-	void colourChange(Color colourChoice)
+	void colourChange(Color tempColour)
 	{
-		m_colour = colourChoice;
+		m_colour = tempColour;
 	}
+	void colourChange()
+	{
+		m_colour = m_buttonColour;
+	}
+
 	void drawRectButton()
 	{
-		DrawRectangle( m_x, m_y, m_width, m_height, m_colour);
+		DrawRectangle(m_x, m_y, m_width, m_height, m_colour);
+		DrawRectangleLines(m_x, m_y, m_width, m_height, BLACK);
 	}
 	void drawTextMiddle(const Font& fontCalculator)
 	{
-		DrawTextEx(fontCalculator, m_text.data(), Vector2(static_cast<float>((m_x + m_width / 2) - MeasureText(m_text.data(), 30)), static_cast<float>((m_y + m_height / 2) - 15)), 30, 10, BLACK);
+		DrawTextEx(fontCalculator, m_text.data(), Vector2(static_cast<float>((m_x + m_width / 2) - MeasureText(m_text.data(), 30)), static_cast<float>((m_y + m_height / 2) - 15)), 30, 10, m_textColour);
 	}
 	
 private:
@@ -42,8 +47,11 @@ private:
 	std::string m_text{};
 	int m_width{};
 	int m_height{};
-	Color m_colour{};
+
 	
-	
+	const Color m_buttonColour{};
+	Color m_colour{m_buttonColour};
+	Color m_textColour{};
+
 };
 
