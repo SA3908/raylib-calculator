@@ -185,7 +185,7 @@ int arithmetic(const std::string& op, const std::string& operand1, const std::st
 	if (op == "+")
 		return add(num1, num2);
 	else if (op == "-")
-		return subtract(num1, num2);
+		return subtract(num2, num1);
 	else if (op == "*")
 		return multiply(num1, num2);
 	else if (op == "/")
