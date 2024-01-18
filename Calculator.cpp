@@ -141,6 +141,18 @@ void Calculator::calculate() //evaluate postfix expression
 			}
 		}
 	}
+	if (std::ssize(m_evaluated) > 1) //merges all elements of m_evaluated together
+	{
+		//std::string answer{ std::begin(m_evaluated), std::end(m_evaluated) };
+		std::string answer{};
+		for (auto& c : m_evaluated)
+		{
+			answer += c;
+		}
+		
+		m_evaluated.clear();
+		m_evaluated.push_back(answer);
+	}
 	
 }
 
