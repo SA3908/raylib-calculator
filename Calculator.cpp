@@ -9,14 +9,46 @@
 void Calculator::parseExpression()	//convert expression to RPN
 {
 	std::ptrdiff_t length{ std::ssize(m_expression) };
-
+	std::ptrdiff_t prevNumIndex{-1};
 
 
 	for (std::ptrdiff_t index{ 0 }; index < length; ++index)
 	{
-		if (m_expression[index][0] >= '0' && m_expression[index][0] <= '9') //check for integer
+		//if (m_expression[index][0] >= '0' && m_expression[index][0] <= '9') //check for integer
+		//{
+		//	m_output.emplace_back(m_expression[index]);
+		//}
+
+		bool numberPresent{};
+		for (std::ptrdiff_t numIndex{ index }; numIndex < length; ++numIndex)
 		{
-			m_output.emplace_back(m_expression[index]);
+			bool isOperator{ false };
+			for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(m_operList); ++opIndex)
+			{
+				if (m_expression[numIndex] == m_operList[opIndex] || m_expression[numIndex] == "(" || m_expression[numIndex] == ")")
+				{
+					isOperator = true;
+					break;
+				}
+
+			}
+			if (isOperator)
+			{
+				
+				break;
+			}
+			
+			if (!numberPresent) //create new element with the number
+			{
+				m_output.emplace_back(m_expression[numIndex]);
+				numberPresent = true;
+			}
+			else if (numberPresent) //add more numbers to current element
+			{
+				m_output.back() += m_expression[numIndex];
+			}
+			index = numIndex;
+			
 		}
 
 		for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(m_operList); ++opIndex)
@@ -112,15 +144,28 @@ void Calculator::calculate() //evaluate postfix expression
 		return;
 
 	std::ptrdiff_t length{ std::ssize(m_output) };
-	std::vector<std::string> tempOperand{};
+	std::string firstOperand{};
+	std::string secondOperand{};
 
 	for (std::ptrdiff_t index{ 0 }; index < length; ++index)
 	{
 		if (m_output[index][0] >= '0' && m_output[index][0] <= '9') //number check
 		{
-			m_evaluated.push_back(m_output[index]);
-
+			m_evaluated.emplace_back(m_output[index]);
 		}
+
+		/*bool currentElement{};
+		for (std::ptrdiff_t numIndex{index + numIterator}; numIndex < std::ssize(m_output); ++numIndex)
+		{
+			if (!currentElement && m_output[numIndex][0] >= '0' && m_output[numIndex][0] <= '9')
+			{
+				m_evaluated.emplace_back(m_output[numIndex]);
+			}
+			else if (currentElement && m_output[numIndex][0] >= '0' && m_output[numIndex][0] <= '9')
+			{
+				m_evaluated.back() += m_output[numIndex];
+			}
+		}*/
 		for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(m_operList); ++opIndex)
 		{
 			if (m_operList[opIndex] == m_output[index] && opIndex != 0)
@@ -128,32 +173,32 @@ void Calculator::calculate() //evaluate postfix expression
 				assert(!m_evaluated.empty()); //if empty, user input operator before first operand
 
 
-				tempOperand.push_back(m_evaluated.back());
+				firstOperand.append(m_evaluated.back());
 				m_evaluated.pop_back();
-				tempOperand.push_back(m_evaluated.back());
+				secondOperand.append(m_evaluated.back());
 				m_evaluated.pop_back();
 
 
-				m_evaluated.push_back(std::to_string(arithmetic(m_operList[opIndex], tempOperand[0], tempOperand[1])));
+				m_evaluated.push_back(std::to_string(arithmetic(m_operList[opIndex], firstOperand, secondOperand)));
 
 
-				tempOperand.clear();
+				firstOperand.clear();
+				secondOperand.clear();
 			}
 		}
 	}
 	if (std::ssize(m_evaluated) > 1) //merges all elements of m_evaluated together
 	{
-		//std::string answer{ std::begin(m_evaluated), std::end(m_evaluated) };
 		std::string answer{};
 		for (auto& c : m_evaluated)
 		{
 			answer += c;
 		}
-		
+
 		m_evaluated.clear();
 		m_evaluated.push_back(answer);
 	}
-	
+
 }
 
 void Calculator::displayOutput() const //display answer
@@ -201,5 +246,8 @@ int arithmetic(const std::string& op, const std::string& operand1, const std::st
 	else if (op == "*")
 		return multiply(num1, num2);
 	else if (op == "/")
-		return divide(num1, num2);
+		return divide(num2, num1);
+
+
+	return 0;
 }

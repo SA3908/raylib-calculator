@@ -1,12 +1,12 @@
 #include <iostream>
 
-#include <array>
-#include <vector>
-#include <string>
+//#include <array>
+//#include <vector>
+//#include <string>
 //#include "Constants.h"
 
-#include <raylib.h>
-#include "button.h"
+//#include <raylib.h>
+#include "button.h"	//raylib defined in button.h
 #include "Calculator.h"
 //calculator program
 
@@ -117,7 +117,7 @@ void debug(Calculator& session)
 {
 	for (std::ptrdiff_t index{ 0 }; index < std::ssize(session.m_output); ++index)
 	{
-		std::cout << session.m_output[index];
+		std::cout << session.m_output[index] << " ";
 		
 	}
 	std::cout << '\n' << "Size of m_evaluated: " << std::ssize(session.m_evaluated);

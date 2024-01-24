@@ -1,5 +1,5 @@
 #pragma once
-#include "raylib.h"
+#include <raylib.h>
 
 class Button
 {
@@ -15,12 +15,7 @@ public:
 	}
 	bool buttonPressed() const
 	{
-		if (GetMouseX() >= m_x && GetMouseX() <= (m_x + m_width) && GetMouseY() >= m_y && GetMouseY() < (m_y + m_height) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
-		{
-			return true;
-		}
-		else
-			return false;
+		return ((GetMouseX() >= m_x && GetMouseX() <= (m_x + m_width) && GetMouseY() >= m_y && GetMouseY() < (m_y + m_height) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) ? true : false));
 	}
 	void colourChange(Color tempColour)
 	{
