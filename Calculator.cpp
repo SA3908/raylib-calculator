@@ -9,7 +9,7 @@
 void Calculator::parseExpression()	//convert expression to RPN
 {
 	std::ptrdiff_t length{ std::ssize(m_expression) };
-	std::ptrdiff_t prevNumIndex{-1};
+	
 
 
 	for (std::ptrdiff_t index{ 0 }; index < length; ++index)
@@ -51,7 +51,7 @@ void Calculator::parseExpression()	//convert expression to RPN
 			
 		}
 
-		for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(m_operList); ++opIndex)
+		for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(m_operList); ++opIndex)	//brackets at start of m_expression error
 		{
 			if (m_expression[index] == m_operList[opIndex])
 			{
@@ -72,7 +72,7 @@ void Calculator::parseExpression()	//convert expression to RPN
 
 			while (!m_operators.empty() && m_operators.top() != "(")
 			{
-				//assert(!m_operators.empty());
+				assert(!m_operators.empty());
 				m_output.push_back(m_operators.top());
 				m_operators.pop();
 			}
@@ -133,6 +133,9 @@ bool Calculator::precedency(const std::string& oldOperator, const std::string& n
 			return true;
 		break;
 	}
+
+	if (newOpLevel < oldOpLevel)
+		return true;
 	return false;
 }
 
@@ -187,17 +190,17 @@ void Calculator::calculate() //evaluate postfix expression
 			}
 		}
 	}
-	if (std::ssize(m_evaluated) > 1) //merges all elements of m_evaluated together
-	{
-		std::string answer{};
-		for (auto& c : m_evaluated)
-		{
-			answer += c;
-		}
+	//if (std::ssize(m_evaluated) > 1) //merges all elements of m_evaluated together
+	//{
+	//	std::string answer{};
+	//	for (auto& c : m_evaluated)
+	//	{
+	//		answer += c;
+	//	}
 
-		m_evaluated.clear();
-		m_evaluated.push_back(answer);
-	}
+	//	m_evaluated.clear();
+	//	m_evaluated.push_back(answer);
+	//}
 
 }
 
