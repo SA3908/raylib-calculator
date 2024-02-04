@@ -130,13 +130,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Calculator.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="src\Calculator.cpp" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="button.h" />
-    <ClInclude Include="Calculator.h" />
-    <ClInclude Include="Constants.h" />
+    <ClInclude Include="src\button.h" />
+    <ClInclude Include="src\Calculator.h" />
+    <ClInclude Include="src\Constants.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
