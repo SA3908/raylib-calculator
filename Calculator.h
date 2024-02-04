@@ -16,35 +16,6 @@ public:
 	auto getExpression() const { return m_expression; }
 	Calculator()
 	{
-		
-	}
-	void express(std::array<Button, 24>& x, std::ptrdiff_t index)
-	{
-		using namespace Constants;
-		
-		if (x[index].getText() == "=")
-		{
-			parseExpression();
-		}
-		else if (x[index].getText() == mul)
-		{
-			m_expression.push_back("*");
-		}
-		else if (x[index].getText() == Constants::div)
-		{
-			m_expression.push_back("/");
-		}
-		else if (x[index].getText() == backspace)
-		{
-			if (!m_expression.empty())
-				m_expression.pop_back();
-		}
-		else if (x[index].getText() == "CE")
-		{
-			m_expression.clear();
-		}
-		else
-			m_expression.push_back(x[index].getText());
 	}
 
 	void drawExpression(Font font, Color colour = BLACK) const
@@ -54,13 +25,16 @@ public:
 		for (std::ptrdiff_t index{ 0 }; index < std::ssize(m_expression); ++index)
 		{
 			DrawTextEx(font, m_expression[index].data(), Vector2{ x += 20, y }, 30, 2, colour);
-			//DrawText(m_expression[index].data(),  x += 20, y, 30, colour);
 		}
 	}
-	void parseExpression();
-	bool precedency(const std::string& oldOperator, const std::string& newOperator);
+	void parseExpression(); //convert infix expression to postfix expression
+	bool precedency(const std::string& oldOperator, const std::string& newOperator); //precedence level
 	void displayOutput() const;
-	void calculate();
+
+	void express(std::array<Button, 24>& x, std::ptrdiff_t index); //add numbers & operators to calculator with on-screen buttons
+	void express(int key, std::array<Button, 24>& button);		   //add numbers & operators to calculator with keyboard buttons
+
+	void calculate(); //evaluate postfix expression
 	
 private:
 	std::vector<std::string> m_expression{}; //user-input

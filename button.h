@@ -35,7 +35,7 @@ public:
 	{
 		DrawTextEx(fontCalculator, m_text.data(), Vector2(static_cast<float>((m_x + m_width / 2) - MeasureText(m_text.data(), 30)), static_cast<float>((m_y + m_height / 2) - 15)), 30, 10, m_textColour);
 	}
-	
+		
 private:
 	int m_x{};
 	int m_y{};

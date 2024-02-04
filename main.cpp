@@ -1,12 +1,5 @@
 #include <iostream>
-
-//#include <array>
-//#include <vector>
-//#include <string>
-//#include "Constants.h"
-
-//#include <raylib.h>
-#include "button.h"	//raylib defined in button.h
+#include "button.h"	//raylib included in button.h
 #include "Calculator.h"
 //calculator program
 
@@ -84,10 +77,10 @@ int main()
 			}
 		}
 
-		DrawRectangleLines(4, 8, 542, 785, BLACK);
+		DrawRectangleLines(4, 8, 542, 785, BLACK); //black outline for calculator
 		
 		
-		for (std::ptrdiff_t index{ 0 }; index < calcButtonSize; ++index) //draw rectangular blue buttons
+		for (std::ptrdiff_t index{ 0 }; index < calcButtonSize; ++index) //draw rectangular buttons then check if the buttons are pressed
 		{
 			
 			calcButton[index].drawRectButton();
@@ -101,7 +94,12 @@ int main()
 
 			}
 		}
-
+		while (GetKeyPressed() > 0) //check if keyboard button is pressed
+		{
+			previousTime = timer;
+			int key{ GetCharPressed() };
+			session.express(key, calcButton);
+		}
 		EndDrawing();
 	}
 

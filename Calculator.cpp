@@ -9,16 +9,11 @@
 void Calculator::parseExpression()	//convert expression to RPN
 {
 	std::ptrdiff_t length{ std::ssize(m_expression) };
-	
+
 
 
 	for (std::ptrdiff_t index{ 0 }; index < length; ++index)
 	{
-		//if (m_expression[index][0] >= '0' && m_expression[index][0] <= '9') //check for integer
-		//{
-		//	m_output.emplace_back(m_expression[index]);
-		//}
-
 		bool numberPresent{};
 		for (std::ptrdiff_t numIndex{ index }; numIndex < length; ++numIndex)
 		{
@@ -34,10 +29,10 @@ void Calculator::parseExpression()	//convert expression to RPN
 			}
 			if (isOperator)
 			{
-				
+
 				break;
 			}
-			
+
 			if (!numberPresent) //create new element with the number
 			{
 				m_output.emplace_back(m_expression[numIndex]);
@@ -48,7 +43,7 @@ void Calculator::parseExpression()	//convert expression to RPN
 				m_output.back() += m_expression[numIndex];
 			}
 			index = numIndex;
-			
+
 		}
 
 		for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(m_operList); ++opIndex)	//brackets at start of m_expression error
@@ -111,7 +106,7 @@ bool Calculator::precedency(const std::string& oldOperator, const std::string& n
 		}
 	}
 
-	switch (newOpLevel)
+	switch (newOpLevel) //to return true if equal precedence
 	{
 	case 0:
 		return true;
@@ -157,18 +152,7 @@ void Calculator::calculate() //evaluate postfix expression
 			m_evaluated.emplace_back(m_output[index]);
 		}
 
-		/*bool currentElement{};
-		for (std::ptrdiff_t numIndex{index + numIterator}; numIndex < std::ssize(m_output); ++numIndex)
-		{
-			if (!currentElement && m_output[numIndex][0] >= '0' && m_output[numIndex][0] <= '9')
-			{
-				m_evaluated.emplace_back(m_output[numIndex]);
-			}
-			else if (currentElement && m_output[numIndex][0] >= '0' && m_output[numIndex][0] <= '9')
-			{
-				m_evaluated.back() += m_output[numIndex];
-			}
-		}*/
+
 		for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(m_operList); ++opIndex)
 		{
 			if (m_operList[opIndex] == m_output[index] && opIndex != 0)
@@ -190,18 +174,6 @@ void Calculator::calculate() //evaluate postfix expression
 			}
 		}
 	}
-	//if (std::ssize(m_evaluated) > 1) //merges all elements of m_evaluated together
-	//{
-	//	std::string answer{};
-	//	for (auto& c : m_evaluated)
-	//	{
-	//		answer += c;
-	//	}
-
-	//	m_evaluated.clear();
-	//	m_evaluated.push_back(answer);
-	//}
-
 }
 
 void Calculator::displayOutput() const //display answer
@@ -209,7 +181,70 @@ void Calculator::displayOutput() const //display answer
 
 }
 
+void  Calculator::express(std::array<Button, 24>& x, std::ptrdiff_t index)
+{
+	using namespace Constants;
 
+	if (x[index].getText() == "=")
+	{
+		parseExpression();
+	}
+	else if (x[index].getText() == mul)
+	{
+		m_expression.push_back("*");
+	}
+	else if (x[index].getText() == Constants::div)
+	{
+		m_expression.push_back("/");
+	}
+	else if (x[index].getText() == backspace)
+	{
+		if (!m_expression.empty())
+			m_expression.pop_back();
+	}
+	else if (x[index].getText() == "CE")
+	{
+		m_expression.clear();
+	}
+	else
+		m_expression.push_back(x[index].getText());
+}
+
+void Calculator::express(int key, std::array<Button, 24>& button) //keyboard input
+{
+	std::string stringKey{ static_cast<char>(key) };
+	for (std::ptrdiff_t index{ 0 }; index < std::ssize(button); ++index)
+	{
+		if (button[index].getText() == stringKey)
+		{
+			button[index].colourChange(RED);
+			express(button, index);
+			break;
+		}
+		if (button[index].getText() == Constants::div && key == 47) // "/" unicode key
+		{
+			button[index].colourChange(RED);
+			m_expression.push_back(stringKey);
+			break;
+		}
+		if (button[index].getText() == Constants::mul && key == 42) // "*" unicode key
+		{
+			button[index].colourChange(RED);
+			m_expression.push_back(stringKey);
+			break;
+		}
+		if (button[index].getText() == Constants::backspace && IsKeyPressed(KEY_BACKSPACE))
+		{
+			button[index].colourChange(RED);
+			if (!m_expression.empty())
+				m_expression.pop_back();
+		}
+		if (button[index].getText() == "CE" && IsKeyPressed(KEY_C))
+		{
+			m_expression.clear();
+		}
+	}
+}
 
 //outer class -------------------------------------
 template <typename T>
