@@ -7,8 +7,6 @@
 #include <stack>
 
 
-
-
 class Calculator
 {
 	friend void debug(Calculator& session);
@@ -28,7 +26,7 @@ public:
 		}
 	}
 	void parseExpression(); //convert infix expression to postfix expression
-	bool precedency(const std::string& oldOperator, const std::string& newOperator); //precedence level
+	int precedency(const std::string& oldOperator, const std::string& newOperator); //precedence level
 	void displayOutput() const;
 
 	void express(std::array<Button, 24>& x, std::ptrdiff_t index); //add numbers & operators to calculator with on-screen buttons

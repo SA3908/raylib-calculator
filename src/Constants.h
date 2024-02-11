@@ -11,5 +11,10 @@ namespace Constants
 	 const std::string fraction{ "\xc2\xbd" };
 	 const std::string backspace{ "\xe2\x8c\xab" };
 
-	
+	 namespace Precedence
+	 {
+		 constexpr int equal{ -1 };
+		 constexpr int lower{ 0 };
+		 constexpr int higher{ 1 };
+	 }
 }

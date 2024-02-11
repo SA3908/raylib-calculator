@@ -1,16 +1,13 @@
 #include "Calculator.h"
 #include <cassert>
 #include <algorithm>
-
-
-
+#include <cmath>
 
 
 void Calculator::parseExpression()	//convert expression to RPN
 {
+	using namespace Constants::Precedence;
 	std::ptrdiff_t length{ std::ssize(m_expression) };
-
-
 
 	for (std::ptrdiff_t index{ 0 }; index < length; ++index)
 	{
@@ -25,14 +22,10 @@ void Calculator::parseExpression()	//convert expression to RPN
 					isOperator = true;
 					break;
 				}
-
 			}
 			if (isOperator)
-			{
-
 				break;
-			}
-
+			
 			if (!numberPresent) //create new element with the number
 			{
 				m_output.emplace_back(m_expression[numIndex]);
@@ -43,14 +36,13 @@ void Calculator::parseExpression()	//convert expression to RPN
 				m_output.back() += m_expression[numIndex];
 			}
 			index = numIndex;
-
 		}
 
-		for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(m_operList); ++opIndex)	//brackets at start of m_expression error
+		for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(m_operList); ++opIndex)
 		{
 			if (m_expression[index] == m_operList[opIndex])
 			{
-				while (!m_operators.empty() && m_operators.top() != "(" && (precedency(m_operList[opIndex], m_operators.top()) == true))
+				while (!m_operators.empty() && m_operators.top() != "(" && (precedency(m_operList[opIndex], m_operators.top()) == higher || (precedency(m_operList[opIndex], m_operators.top()) == equal && m_operList[opIndex] != "^")))
 				{
 					m_output.push_back(m_operators.top());
 					m_operators.pop();
@@ -64,7 +56,6 @@ void Calculator::parseExpression()	//convert expression to RPN
 		}
 		if (m_expression[index] == ")")
 		{
-
 			while (!m_operators.empty() && m_operators.top() != "(")
 			{
 				assert(!m_operators.empty());
@@ -74,9 +65,7 @@ void Calculator::parseExpression()	//convert expression to RPN
 			assert(m_operators.top() == "(");
 			m_operators.pop(); // remove the "("
 		}
-
 	}
-
 
 	while (!m_operators.empty())
 	{
@@ -89,7 +78,7 @@ void Calculator::parseExpression()	//convert expression to RPN
 	calculate();
 }
 
-bool Calculator::precedency(const std::string& oldOperator, const std::string& newOperator) //check precendency between two operators, if newOperator has higher precedence return true.
+int Calculator::precedency(const std::string& oldOperator, const std::string& newOperator) //check precendency between two operators, if newOperator has higher precedence return true.
 {
 	int newOpLevel{};
 	int oldOpLevel{};
@@ -97,41 +86,39 @@ bool Calculator::precedency(const std::string& oldOperator, const std::string& n
 	for (std::ptrdiff_t index{ 0 }; index < std::ssize(m_operList); ++index)
 	{
 		if (newOperator == m_operList[index])
-		{
 			newOpLevel = static_cast<int>(index);
-		}
 		if (oldOperator == m_operList[index])
-		{
 			oldOpLevel = static_cast<int>(index);
-		}
 	}
-
-	switch (newOpLevel) //to return true if equal precedence
+	
+	using namespace Constants::Precedence;
+	switch (newOpLevel)
 	{
 	case 0:
-		return true;
+		if(oldOpLevel == 0)
+			return equal;
 		break;
 	case 1:
 		if (oldOpLevel == 2)
-			return true;
+			return equal;
 		break;
 	case 2:
 		if (oldOpLevel == 1)
-			return true;
+			return equal;
 		break;
 	case 3:
 		if (oldOpLevel == 4)
-			return true;
+			return equal;
 		break;
 	case 4:
 		if (oldOpLevel == 3)
-			return true;
+			return equal;
 		break;
 	}
 
 	if (newOpLevel < oldOpLevel)
-		return true;
-	return false;
+		return higher;
+	return lower;
 }
 
 int arithmetic(const std::string& op, const std::string& operand1, const std::string& operand2);
@@ -155,19 +142,16 @@ void Calculator::calculate() //evaluate postfix expression
 
 		for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(m_operList); ++opIndex)
 		{
-			if (m_operList[opIndex] == m_output[index] && opIndex != 0)
+			if (m_operList[opIndex] == m_output[index])
 			{
 				assert(!m_evaluated.empty()); //if empty, user input operator before first operand
-
 
 				firstOperand.append(m_evaluated.back());
 				m_evaluated.pop_back();
 				secondOperand.append(m_evaluated.back());
 				m_evaluated.pop_back();
 
-
 				m_evaluated.push_back(std::to_string(arithmetic(m_operList[opIndex], firstOperand, secondOperand)));
-
 
 				firstOperand.clear();
 				secondOperand.clear();
@@ -181,7 +165,7 @@ void Calculator::displayOutput() const //display answer
 
 }
 
-void  Calculator::express(std::array<Button, 24>& x, std::ptrdiff_t index)
+void  Calculator::express(std::array<Button, 24>& x, std::ptrdiff_t index) //GUI butttons
 {
 	using namespace Constants;
 
@@ -271,7 +255,6 @@ T multiply(T x, T y)
 	return x * y;
 }
 
-
 int arithmetic(const std::string& op, const std::string& operand1, const std::string& operand2)
 {
 	int num1{ std::stoi(operand1) }; //use variation of std::stol for float/doubles
@@ -285,7 +268,7 @@ int arithmetic(const std::string& op, const std::string& operand1, const std::st
 		return multiply(num1, num2);
 	else if (op == "/")
 		return divide(num2, num1);
-
-
+	else if (op == "^")
+		return pow(num2, num1);
 	return 0;
 }

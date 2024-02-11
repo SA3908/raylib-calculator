@@ -4,7 +4,6 @@
 //calculator program
 
 
-
 int main()
 {
 	// set up the window
@@ -79,7 +78,6 @@ int main()
 
 		DrawRectangleLines(4, 8, 542, 785, BLACK); //black outline for calculator
 		
-		
 		for (std::ptrdiff_t index{ 0 }; index < calcButtonSize; ++index) //draw rectangular buttons then check if the buttons are pressed
 		{
 			
@@ -122,5 +120,4 @@ void debug(Calculator& session)
 
 	if (session.m_parsed)
 		std::cout << '\n' << "The answer is: " << session.m_evaluated.back();
-	
 }
