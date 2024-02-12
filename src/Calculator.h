@@ -11,23 +11,17 @@ class Calculator
 {
 	friend void debug(Calculator& session);
 public:
+	auto getCalculatedState() const { return m_calculated; }
 	auto getExpression() const { return m_expression; }
 	Calculator()
 	{
 	}
 
-	void drawExpression(Font font, Color colour = BLACK) const
-	{
-		float x{ 100 };
-		float y{ 120 };
-		for (std::ptrdiff_t index{ 0 }; index < std::ssize(m_expression); ++index)
-		{
-			DrawTextEx(font, m_expression[index].data(), Vector2{ x += 20, y }, 30, 2, colour);
-		}
-	}
 	void parseExpression(); //convert infix expression to postfix expression
 	int precedency(const std::string& oldOperator, const std::string& newOperator); //precedence level
-	void displayOutput() const;
+
+	void drawExpression(Font font, Color colour = BLACK) const;
+	void drawEvaluated(Font font, Color colour = BLACK) const;
 
 	void express(std::array<Button, 24>& x, std::ptrdiff_t index); //add numbers & operators to calculator with on-screen buttons
 	void express(int key, std::array<Button, 24>& button);		   //add numbers & operators to calculator with keyboard buttons
@@ -44,5 +38,6 @@ private:
 	std::vector<std::string> m_operList {"^", "/", "*", "+", "-"};
 
 	bool m_parsed{false};
+	bool m_calculated{ false };
 };
 

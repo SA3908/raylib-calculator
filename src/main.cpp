@@ -78,14 +78,17 @@ int main()
 
 		DrawRectangleLines(4, 8, 542, 785, BLACK); //black outline for calculator
 		
+
 		for (std::ptrdiff_t index{ 0 }; index < calcButtonSize; ++index) //draw rectangular buttons then check if the buttons are pressed
 		{
 			
 			calcButton[index].drawRectButton();
 			calcButton[index].drawTextMiddle(fontCalculator);
-			session.drawExpression(fontCalculator, RAYWHITE);
 			if (calcButton[index].buttonPressed())
 			{
+				if (session.getCalculatedState())
+					session = Calculator(); //reset calculator to original state
+
 				previousTime = timer;
 				calcButton[index].colourChange(RED);
 				session.express(calcButton, index);
@@ -94,10 +97,15 @@ int main()
 		}
 		while (GetKeyPressed() > 0) //check if keyboard button is pressed
 		{
+			if (session.getCalculatedState())
+				session = Calculator(); //reset calculator to original state
+
 			previousTime = timer;
 			int key{ GetCharPressed() };
 			session.express(key, calcButton);
 		}
+		session.drawExpression(fontCalculator, RAYWHITE);
+		session.drawEvaluated(fontCalculator, RAYWHITE);
 		EndDrawing();
 	}
 
