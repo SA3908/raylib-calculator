@@ -7,7 +7,7 @@
 void Calculator::parseExpression()	//convert expression to RPN
 {
 	using namespace Constants::Precedence;
-	std::ptrdiff_t length{ std::ssize(m_expression) };
+	std::ptrdiff_t length{ m_expression.ssize() };
 
 	for (std::ptrdiff_t index{ 0 }; index < length; ++index)
 	{
@@ -17,7 +17,7 @@ void Calculator::parseExpression()	//convert expression to RPN
 			bool isOperator{ false };
 			for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(m_operList); ++opIndex)
 			{
-				if (m_expression[numIndex] == m_operList[opIndex] || m_expression[numIndex] == "(" || m_expression[numIndex] == ")")
+				if (m_expression[numIndex] ==  m_operList[opIndex] || m_expression[numIndex] == "(" || m_expression[numIndex] == ")")
 				{
 					isOperator = true;
 					break;
@@ -151,66 +151,67 @@ void Calculator::calculate() //evaluate postfix expression
 				secondOperand.append(m_evaluated.back());
 				m_evaluated.pop_back();
 
-				m_evaluated.push_back(std::to_string(arithmetic(m_operList[opIndex], firstOperand, secondOperand)));
+				m_evaluated.emplace_back(std::to_string(arithmetic(m_operList[opIndex], firstOperand, secondOperand)));
 
 				firstOperand.clear();
 				secondOperand.clear();
 			}
 		}
 	}
+
 	m_calculated = true;
 }
 
-void Calculator::drawExpression(Font font, Color colour) const
+void Calculator::drawExpression(Font& font, Color colour) const
 {
 	float x{ 1 };
 	float y{ 20 };
-	for (std::ptrdiff_t index{ 0 }; index < std::ssize(m_expression); ++index)
+	for (std::ptrdiff_t index{ 0 }; index < m_expression.ssize(); ++index)
 	{
-		DrawTextEx(font, m_expression[index].data(), Vector2{ x += 20, y }, 30, 2, colour);
+		DrawTextEx(font, m_expression[index].data(), Vector2{x += 20, y}, 30, 2, colour);
 	}
 }
 
-void Calculator::drawEvaluated(Font font, Color colour) const //display answer
+void Calculator::drawEvaluated(Font& font, Color colour) const //display answer
 {
 	if (!m_calculated)
 		return;
 
 	float x{ 480 };
 	float y{ 190 };
-	for (std::ptrdiff_t index{ 0 }; index < std::ssize(m_evaluated); ++index)
+	for (std::ptrdiff_t index{ 0 }; index < m_evaluated.ssize(); ++index)
 	{
 		DrawTextEx(font, m_evaluated[index].data(), Vector2{ x += 20, y }, 30, 2, colour);
 	}
 }
 
-void  Calculator::express(std::array<Button, 24>& x, std::ptrdiff_t index) //GUI butttons
+void  Calculator::express(std::array<Button, 24>& button, std::ptrdiff_t index) //GUI butttons
 {
 	using namespace Constants;
 
-	if (x[index].getText() == "=")
+	if (button[index].getText() == "=")
 	{
 		parseExpression();
 	}
-	else if (x[index].getText() == mul)
+	else if (button[index].getText() == mul)
 	{
 		m_expression.push_back("*");
 	}
-	else if (x[index].getText() == Constants::div)
+	else if (button[index].getText() == Constants::div)
 	{
 		m_expression.push_back("/");
 	}
-	else if (x[index].getText() == backspace)
+	else if (button[index].getText() == backspace)
 	{
 		if (!m_expression.empty())
 			m_expression.pop_back();
 	}
-	else if (x[index].getText() == "CE")
+	else if (button[index].getText() == "CE")
 	{
 		m_expression.clear();
 	}
 	else
-		m_expression.push_back(x[index].getText());
+		m_expression.push_back(button[index].getText());
 }
 
 void Calculator::express(int key, std::array<Button, 24>& button) //keyboard input

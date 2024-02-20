@@ -57,8 +57,8 @@ int main()
 		{415, 225, 130, 90, Constants::backspace, Color{255, 16, 40, 255}, BLACK},	// backspace
 	} };
 	constexpr auto calcButtonSize{ std::ssize(calcButton) };
-	Calculator session{};
-
+	Calculator session{ {4, 8, 542, 100 }, { 4, 115, 542, 100, true } };
+	
 	//loop
 	while (!WindowShouldClose())
 	{
@@ -87,7 +87,7 @@ int main()
 			if (calcButton[index].buttonPressed())
 			{
 				if (session.getCalculatedState())
-					session = Calculator(); //reset calculator to original state
+					session = Calculator({ 4, 8, 542, 100 }, { 4, 115, 542, 100, true }); //reset calculator to original state
 
 				previousTime = timer;
 				calcButton[index].colourChange(RED);
@@ -98,7 +98,7 @@ int main()
 		while (GetKeyPressed() > 0) //check if keyboard button is pressed
 		{
 			if (session.getCalculatedState())
-				session = Calculator(); //reset calculator to original state
+				session = Calculator({ 4, 8, 542, 100 }, { 4, 115, 542, 100, true }); //reset calculator to original state
 
 			previousTime = timer;
 			int key{ GetCharPressed() };
@@ -124,7 +124,7 @@ void debug(Calculator& session)
 		std::cout << session.m_output[index] << " ";
 		
 	}
-	std::cout << '\n' << "Size of m_evaluated: " << std::ssize(session.m_evaluated);
+	std::cout << '\n' << "Size of m_evaluated: " << std::ssize(session.m_evaluated.getText());
 
 	if (session.m_parsed)
 		std::cout << '\n' << "The answer is: " << session.m_evaluated.back();

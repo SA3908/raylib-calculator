@@ -132,11 +132,13 @@
   <ItemGroup>
     <ClCompile Include="src\Calculator.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\TextBox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\button.h" />
     <ClInclude Include="src\Calculator.h" />
     <ClInclude Include="src\Constants.h" />
+    <ClInclude Include="src\TextBox.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
