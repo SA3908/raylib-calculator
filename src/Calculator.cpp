@@ -251,29 +251,6 @@ void Calculator::express(int key, std::array<Button, 24>& button) //keyboard inp
 }
 
 //outer class -------------------------------------
-template <typename T>
-T add(T x, T y)
-{
-	return x + y;
-}
-
-template <typename T>
-T subtract(T x, T y)
-{
-	return x - y;
-}
-
-template <typename T>
-T divide(T x, T y)
-{
-	return x / y;
-}
-
-template <typename T>
-T multiply(T x, T y)
-{
-	return x * y;
-}
 
 int arithmetic(const std::string& op, const std::string& operand1, const std::string& operand2)
 {
@@ -281,13 +258,13 @@ int arithmetic(const std::string& op, const std::string& operand1, const std::st
 	int num2{ std::stoi(operand2) };
 
 	if (op == "+")
-		return add(num1, num2);
+		return num1 + num2;
 	else if (op == "-")
-		return subtract(num2, num1);
+		return num2 - num1;
 	else if (op == "*")
-		return multiply(num1, num2);
+		return num1 * num2;
 	else if (op == "/")
-		return divide(num2, num1);
+		return (num1 == 0 || num2 == 0) ? 0 : num2 / num1;
 	else if (op == "^")
 		return pow(num2, num1);
 	return 0;
