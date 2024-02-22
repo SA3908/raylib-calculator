@@ -162,28 +162,6 @@ void Calculator::calculate() //evaluate postfix expression
 	m_calculated = true;
 }
 
-void Calculator::drawExpression(Font& font, Color colour) const
-{
-	float x{ 1 };
-	float y{ 20 };
-	for (std::ptrdiff_t index{ 0 }; index < m_expression.ssize(); ++index)
-	{
-		DrawTextEx(font, m_expression[index].data(), Vector2{x += 20, y}, 30, 2, colour);
-	}
-}
-
-void Calculator::drawEvaluated(Font& font, Color colour) const //display answer
-{
-	if (!m_calculated)
-		return;
-
-	float x{ 480 };
-	float y{ 190 };
-	for (std::ptrdiff_t index{ 0 }; index < m_evaluated.ssize(); ++index)
-	{
-		DrawTextEx(font, m_evaluated[index].data(), Vector2{ x += 20, y }, 30, 2, colour);
-	}
-}
 
 void  Calculator::express(std::array<Button, 24>& button, std::ptrdiff_t index) //GUI butttons
 {

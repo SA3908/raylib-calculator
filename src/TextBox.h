@@ -1,11 +1,8 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <array>
-#include "button.h"
 #include <raylib.h>
 
-//class Button;
 
 class TextBox //display, align and manoeuvre through text
 {
@@ -34,6 +31,39 @@ public:
 	void push_back(const std::string& text) { m_text.push_back(text); }
 	void emplace_back(const std::string& text) { m_text.emplace_back(text); }
 
+	void drawText(Font& font) 
+	{
+		if (m_text.empty())
+			return;
+
+		std::ptrdiff_t length{ std::ssize(m_text) };
+		float measuredString{};
+		float x{ m_x };
+		for (std::ptrdiff_t index{ 0 }; index < length; ++index)
+		{
+			measuredString += MeasureTextEx(font, m_text[index].c_str(), 30, 0).x;
+		}
+		if (length * 20 >= m_width) //ensure text width does not exceed calculator bounds
+			m_drawingState = false;
+		else
+			m_drawingState = true;
+
+		if (m_drawingState && !m_rightAlign)  //draw text left-aligned from m_x
+		{
+			for (std::ptrdiff_t index{ 0 }; index < length; ++index)
+			{
+				DrawTextEx(font, m_text[index].c_str(), Vector2(x += 15, m_y), 30, 0, RAYWHITE);
+			}
+		}
+		if (m_drawingState && m_rightAlign) //draw text right-aligned from m_width
+		{
+			for (std::ptrdiff_t index{ 0 }; index < length; ++index)
+			{
+				DrawTextEx(font, m_text[index].c_str(), Vector2{m_width - measuredString, m_y}, 30, 0, RAYWHITE);
+			}
+		}
+	}
+
 private:
 	float m_x{0};
 	float m_y{0};
@@ -41,7 +71,7 @@ private:
 	int m_height{0};
 	std::vector<std::string> m_text{};
 
-	bool m_drawingState{ true };
+	bool m_drawingState{ true }; //prevention for m_text exceeding m_width
 	bool m_rightAlign{};
 	
 };

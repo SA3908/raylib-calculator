@@ -13,9 +13,9 @@ class Calculator
 {
 	friend void debug(Calculator& session);
 public:
-	auto getCalculatedState() const { return m_calculated; }
-	auto getExpression() const { return m_expression; }
-
+	bool getCalculatedState() const { return m_calculated; }
+	TextBox& getExpression() { return m_expression; }
+	TextBox& getEvaluated()  { return m_evaluated; }
 	Calculator()
 	{
 	}
@@ -25,10 +25,7 @@ public:
 	}
 
 	void parseExpression(); //convert infix expression to postfix expression
-	int precedency(const std::string& oldOperator, const std::string& newOperator); //precedence level
-
-	void drawExpression(Font& font, Color colour = BLACK) const;
-	void drawEvaluated(Font& font, Color colour = BLACK) const;
+	int precedency(const std::string& oldOperator, const std::string& newOperator); //return precedence level
 
 	void express(std::array<Button, 24>& button, std::ptrdiff_t index); //add numbers & operators to calculator with on-screen buttons
 	void express(int key, std::array<Button, 24>& button);		   //add numbers & operators to calculator with keyboard buttons

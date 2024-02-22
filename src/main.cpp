@@ -57,7 +57,7 @@ int main()
 		{415, 225, 130, 90, Constants::backspace, Color{255, 16, 40, 255}, BLACK},	// backspace
 	} };
 	constexpr auto calcButtonSize{ std::ssize(calcButton) };
-	Calculator session{ {4, 8, 542, 100 }, { 4, 115, 542, 100, true } };
+	Calculator session{ {1, 20, 542, 100 }, {480, 190, 542, 100, true } };
 	
 	//loop
 	while (!WindowShouldClose())
@@ -87,7 +87,7 @@ int main()
 			if (calcButton[index].buttonPressed())
 			{
 				if (session.getCalculatedState())
-					session = Calculator({ 4, 8, 542, 100 }, { 4, 115, 542, 100, true }); //reset calculator to original state
+					session = Calculator({ 1, 20, 542, 100 }, { 480, 190, 542, 100, true }); //reset calculator to original state
 
 				previousTime = timer;
 				calcButton[index].colourChange(RED);
@@ -98,14 +98,15 @@ int main()
 		while (GetKeyPressed() > 0) //check if keyboard button is pressed
 		{
 			if (session.getCalculatedState())
-				session = Calculator({ 4, 8, 542, 100 }, { 4, 115, 542, 100, true }); //reset calculator to original state
+				session = Calculator({ 1, 20, 542, 100 }, { 480, 190, 542, 100, true }); //reset calculator to original state
 
 			previousTime = timer;
 			int key{ GetCharPressed() };
 			session.express(key, calcButton);
 		}
-		session.drawExpression(fontCalculator, RAYWHITE);
-		session.drawEvaluated(fontCalculator, RAYWHITE);
+		session.getExpression().drawText(fontCalculator);
+		session.getEvaluated().drawText(fontCalculator);
+
 		EndDrawing();
 	}
 
