@@ -166,6 +166,7 @@ void Calculator::calculate() //evaluate postfix expression
 void  Calculator::express(std::array<Button, 24>& button, std::ptrdiff_t index) //GUI butttons
 {
 	using namespace Constants;
+	
 
 	if (button[index].getText() == "=")
 	{
@@ -194,6 +195,9 @@ void  Calculator::express(std::array<Button, 24>& button, std::ptrdiff_t index) 
 
 void Calculator::express(int key, std::array<Button, 24>& button) //keyboard input
 {
+
+	m_expression.traverseArrowKey();
+
 	std::string stringKey{ static_cast<char>(key) };
 	for (std::ptrdiff_t index{ 0 }; index < std::ssize(button); ++index)
 	{
