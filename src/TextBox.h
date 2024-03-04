@@ -22,6 +22,7 @@ public:
 	}
 
 	std::vector<std::string>& getText() { return m_text; }
+	const bool endIndex() const { return m_endIndex; }
 
 	//OVERLOADS
 	std::string& operator[] (const std::ptrdiff_t index) { return m_text[index]; }
@@ -38,45 +39,64 @@ public:
 
 
 
-	
-	
+	void updateIndex()
+	{
+		if (!m_endIndex || m_text.empty())
+			return;
+		m_index.outIndex = std::ssize(m_text);
+		m_index.inIndex = 0;
+	}
+
 	void traverseArrowKey() //if arrow keys are pressed move the " | " left/right. 
 	{
 		if (IsKeyPressed(KEY_RIGHT))
 		{
-			
-			if (!m_text.empty() && std::ssize(m_text) >= m_index.outIndex)
+
+			if (!m_text.empty() && std::ssize(m_text) > m_index.outIndex)
 			{
 				if (std::ssize(m_text[m_index.inIndex]) > m_index.inIndex)
 				{
 					m_index.inIndex += 1;
 				}
-				if (m_index.outIndex < std::ssize(m_text))
+				if (m_index.outIndex < std::ssize(m_text) && m_index.inIndex == std::ssize((m_text[m_index.inIndex])))
 				{
 					m_index.outIndex += 1;
 				}
 			}
 			m_endIndex = false;
-			if (std::ssize(m_text) == m_index.outIndex && std::ssize(m_text.back()) == m_index.inIndex)
-				m_endIndex = true;
 		}
 		if (IsKeyPressed(KEY_LEFT))
 		{
-			if (!m_text.empty() && std::ssize(m_text) >= m_index.outIndex)
+			if (!m_text.empty() && std::ssize(m_text) > m_index.outIndex && m_index.outIndex > -1)
 			{
-				if (std::ssize(m_text[m_index.inIndex]) > m_index.inIndex && m_index.inIndex > 0)
+				if (std::ssize(m_text[m_index.inIndex]) > m_index.inIndex && m_index.inIndex > -1)
 				{
 					m_index.inIndex -= 1;
 				}
-				if (m_index.outIndex > 0)
+				if (m_index.outIndex > -1 && std::ssize(m_text[m_index.inIndex]) == m_index.inIndex)
 				{
 					m_index.outIndex -= 1;
 				}
 				m_endIndex = false;
-				if (std::ssize(m_text) == m_index.outIndex && std::ssize(m_text.back()) == m_index.inIndex)
-					m_endIndex = true;
 			}
 		}
+		if (!m_text.empty())
+		{
+			if (std::ssize(m_text) < m_index.outIndex)
+				m_index.outIndex = std::ssize(m_text);
+
+			if (std::ssize(m_text[m_index.outIndex]) < m_index.inIndex)
+				m_index.inIndex = std::ssize(m_text[m_index.outIndex]);
+		}
+		if (m_text.empty())
+		{
+			m_index.outIndex = 0;
+			m_index.inIndex = 0;
+			m_endIndex = true;
+		}
+
+		if (!m_text.empty() && std::ssize(m_text) == m_index.outIndex && std::ssize(m_text.back()) == m_index.inIndex)
+			m_endIndex = true;
 	}
 
 	void drawText(Font& font)
@@ -121,7 +141,26 @@ public:
 		
 		
 	}
-
+	void insertIndex(const std::string& ch)
+	{
+		if (std::ssize(m_text) == m_index.outIndex)
+		{
+			m_text.push_back(ch);
+			++m_index.outIndex;
+		}
+		else if (std::ssize(m_text[m_index.outIndex]) == m_index.inIndex)
+			m_text[m_index.outIndex].push_back(ch.front());
+		else
+			m_text[m_index.outIndex][m_index.inIndex] = ch.front();
+	}
+	/*void insertIndex(const std::string ch)
+	{
+		if (std::ssize(m_text) == m_index.outIndex)
+		{
+			m_text.emplace_back(ch);
+		}
+		
+	}*/
 private:
 	char drawPipe() { return m_text[m_index.outIndex][m_index.inIndex]; }
 
@@ -132,11 +171,11 @@ private:
 	int m_height{ 0 };
 
 	std::vector<std::string> m_text{};
-	IndexPair m_index{0, 0}; //this index allows modification of m_text
+	IndexPair m_index{0, 0}; //this index allows modification of m_text and holds cursor position
 	bool m_endIndex{ true }; //for index to keep up with last index of m_text
 
 	bool m_drawingState{ true }; //prevention for m_text exceeding m_width
 	bool m_rightAlign{};
 };
 
-//TODO: modify express function to insert characters at specified index, function to traverse using arrow keys, bool function to return true if char at index to draw text == m_index. 
+// do not allow m_index to be in an element that contains any operator

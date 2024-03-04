@@ -166,7 +166,8 @@ void Calculator::calculate() //evaluate postfix expression
 void  Calculator::express(std::array<Button, 24>& button, std::ptrdiff_t index) //GUI butttons
 {
 	using namespace Constants;
-	
+
+	//m_expression.traverseArrowKey();
 
 	if (button[index].getText() == "=")
 	{
@@ -174,11 +175,11 @@ void  Calculator::express(std::array<Button, 24>& button, std::ptrdiff_t index) 
 	}
 	else if (button[index].getText() == mul)
 	{
-		m_expression.push_back("*");
+		m_expression.insertIndex("*");
 	}
 	else if (button[index].getText() == Constants::div)
 	{
-		m_expression.push_back("/");
+		m_expression.insertIndex("/");
 	}
 	else if (button[index].getText() == backspace)
 	{
@@ -190,7 +191,12 @@ void  Calculator::express(std::array<Button, 24>& button, std::ptrdiff_t index) 
 		m_expression.clear();
 	}
 	else
-		m_expression.push_back(button[index].getText());
+	{
+		if (m_expression.endIndex())
+			m_expression.updateIndex();
+
+		m_expression.insertIndex(button[index].getText());
+	}
 }
 
 void Calculator::express(int key, std::array<Button, 24>& button) //keyboard input
@@ -201,7 +207,7 @@ void Calculator::express(int key, std::array<Button, 24>& button) //keyboard inp
 	std::string stringKey{ static_cast<char>(key) };
 	for (std::ptrdiff_t index{ 0 }; index < std::ssize(button); ++index)
 	{
-		if (button[index].getText() == stringKey)
+		if (button[index].getText().front() == stringKey.front())
 		{
 			button[index].colourChange(RED);
 			express(button, index);
@@ -210,13 +216,13 @@ void Calculator::express(int key, std::array<Button, 24>& button) //keyboard inp
 		if (button[index].getText() == Constants::div && key == 47) // "/" unicode key
 		{
 			button[index].colourChange(RED);
-			m_expression.push_back(stringKey);
+			m_expression.insertIndex(stringKey);
 			break;
 		}
 		if (button[index].getText() == Constants::mul && key == 42) // "*" unicode key
 		{
 			button[index].colourChange(RED);
-			m_expression.push_back(stringKey);
+			m_expression.insertIndex(stringKey);
 			break;
 		}
 		if (button[index].getText() == Constants::backspace && IsKeyPressed(KEY_BACKSPACE))
@@ -230,6 +236,8 @@ void Calculator::express(int key, std::array<Button, 24>& button) //keyboard inp
 			m_expression.clear();
 		}
 	}
+	if (m_expression.endIndex())
+		m_expression.updateIndex();
 }
 
 //outer class -------------------------------------
