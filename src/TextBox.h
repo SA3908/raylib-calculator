@@ -43,7 +43,7 @@ public:
 	{
 		if (!m_endIndex || m_text.empty())
 			return;
-		m_index.outIndex = std::ssize(m_text);
+		m_index.outIndex = std::ssize(m_text) - 1;
 		m_index.inIndex = 0;
 	}
 
