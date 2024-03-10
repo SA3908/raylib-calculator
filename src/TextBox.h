@@ -28,10 +28,11 @@ public:
 	std::string& operator[] (const std::ptrdiff_t index) { return m_text[index]; }
 	const std::string& operator[] (const std::ptrdiff_t index) const { return m_text[index]; }
 
-	const std::string& back() { return m_text.back(); }
-	bool empty() const { return m_text.empty(); }
+	const std::string& back() const { return m_text.back(); }
+	std::string& back() { return m_text.back(); }
+	const bool empty() const { return m_text.empty(); }
 	void clear() { m_text.clear(); }
-	std::ptrdiff_t ssize() const { return std::ssize(m_text); }
+	const std::ptrdiff_t ssize() const { return std::ssize(m_text); }
 
 	void pop_back() { m_text.pop_back(); }
 	void push_back(const std::string& text) { m_text.push_back(text); }
@@ -44,7 +45,7 @@ public:
 		if (!m_endIndex || m_text.empty())
 			return;
 		m_index.outIndex = std::ssize(m_text) - 1;
-		m_index.inIndex = 0;
+		//m_index.inIndex = 0;
 	}
 
 	void traverseArrowKey() //if arrow keys are pressed move the " | " left/right. 
@@ -54,11 +55,11 @@ public:
 
 			if (!m_text.empty() && std::ssize(m_text) > m_index.outIndex)
 			{
-				if (std::ssize(m_text[m_index.inIndex]) > m_index.inIndex)
+				if (std::ssize(m_text[m_index.outIndex]) > m_index.inIndex)
 				{
 					m_index.inIndex += 1;
 				}
-				if (m_index.outIndex < std::ssize(m_text) && m_index.inIndex == std::ssize((m_text[m_index.inIndex])))
+				else if (m_index.outIndex < std::ssize(m_text) && m_index.inIndex == std::ssize((m_text[m_index.outIndex])))
 				{
 					m_index.outIndex += 1;
 				}
@@ -69,11 +70,11 @@ public:
 		{
 			if (!m_text.empty() && std::ssize(m_text) > m_index.outIndex && m_index.outIndex > -1)
 			{
-				if (std::ssize(m_text[m_index.inIndex]) > m_index.inIndex && m_index.inIndex > -1)
+				if (std::ssize(m_text[m_index.outIndex]) > m_index.inIndex && m_index.inIndex > -1)
 				{
 					m_index.inIndex -= 1;
 				}
-				if (m_index.outIndex > -1 && std::ssize(m_text[m_index.inIndex]) == m_index.inIndex)
+				else if (m_index.outIndex > -1 && std::ssize(m_text[m_index.inIndex]) == m_index.outIndex)
 				{
 					m_index.outIndex -= 1;
 				}
@@ -141,28 +142,56 @@ public:
 		
 		
 	}
-	void insertIndex(const std::string& ch)
+	void insertIndex(const std::string& ch, const std::vector<std::string>& operList)
 	{
-		if (std::ssize(m_text) == m_index.outIndex)
+		bool isOperator{ false };
+		for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(operList); ++opIndex)
 		{
-			m_text.push_back(ch);
-			++m_index.outIndex;
+			if (ch == operList[opIndex])
+				isOperator = true;
 		}
-		else if (std::ssize(m_text[m_index.outIndex]) == m_index.inIndex)
-			m_text[m_index.outIndex].push_back(ch.front());
-		else
-			m_text[m_index.outIndex][m_index.inIndex] = ch.front();
+
+		if (!isOperator)
+		{
+			for (std::ptrdiff_t index{ m_index.outIndex }; index < std::ssize(m_text); ++index)
+			{
+				if (elementIsOperator(index, operList))
+				{
+					m_index.outIndex = index + 1; //last element (index) is operator, so, push the number to the back
+					break;
+				}
+			}
+			if (std::ssize(m_text) == m_index.outIndex) //create new element
+			{
+				m_text.push_back(ch);
+				++m_index.outIndex;
+			}
+			else if (std::ssize(m_text[m_index.outIndex]) - 1 == m_index.inIndex)
+			{
+				m_text[m_index.outIndex].push_back(ch.front());
+				if (m_endIndex)
+					++m_index.inIndex;
+			}
+			else
+				m_text[m_index.outIndex][m_index.inIndex] = ch.front();
+			//to do: if index is operator, push to index + 1, set index to index + 1
+		}
+		else if (isOperator)
+		{
+			if (std::ssize(m_text) - 1 == m_index.outIndex)
+			{
+				m_text.push_back(ch);
+			}
+		}
 	}
-	/*void insertIndex(const std::string ch)
+	void deleteIndex() //remove character at m_index
 	{
-		if (std::ssize(m_text) == m_index.outIndex)
-		{
-			m_text.emplace_back(ch);
-		}
-		
-	}*/
+
+	}
+	
 private:
 	char drawPipe() { return m_text[m_index.outIndex][m_index.inIndex]; }
+	const bool elementIsOperator (const std::ptrdiff_t index, const std::vector<std::string>& operList) const;
 
 
 	float m_x{ 0 };
@@ -179,3 +208,5 @@ private:
 };
 
 // do not allow m_index to be in an element that contains any operator
+// insert index - make sure operators are in standalone elements, seperate numbers from operators. if index is on an element that already contains a number,
+//then add numbers to that element otherwise if it is an operator, insert it to next index that does not contain operators.

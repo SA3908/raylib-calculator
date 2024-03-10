@@ -11,31 +11,9 @@ void Calculator::parseExpression()	//convert expression to RPN
 
 	for (std::ptrdiff_t index{ 0 }; index < length; ++index)
 	{
-		bool numberPresent{};
-		for (std::ptrdiff_t numIndex{ index }; numIndex < length; ++numIndex)
+		if (m_expression[index][0] >= '0' && m_expression[index][0] <= '9') //check for integer
 		{
-			bool isOperator{ false };
-			for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(m_operList); ++opIndex)
-			{
-				if (m_expression[numIndex] ==  m_operList[opIndex] || m_expression[numIndex] == "(" || m_expression[numIndex] == ")")
-				{
-					isOperator = true;
-					break;
-				}
-			}
-			if (isOperator)
-				break;
-			
-			if (!numberPresent) //create new element with the number
-			{
-				m_output.emplace_back(m_expression[numIndex]);
-				numberPresent = true;
-			}
-			else if (numberPresent) //add more numbers to current element
-			{
-				m_output.back() += m_expression[numIndex];
-			}
-			index = numIndex;
+			m_output.emplace_back(m_expression[index]);
 		}
 
 		for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(m_operList); ++opIndex)
@@ -146,7 +124,7 @@ void Calculator::calculate() //evaluate postfix expression
 			{
 				assert(!m_evaluated.empty()); //if empty, user input operator before first operand
 
-				firstOperand.append(m_evaluated.back());
+				firstOperand.append(m_evaluated.back()); 
 				m_evaluated.pop_back();
 				secondOperand.append(m_evaluated.back());
 				m_evaluated.pop_back();
@@ -167,19 +145,17 @@ void  Calculator::express(std::array<Button, 24>& button, std::ptrdiff_t index) 
 {
 	using namespace Constants;
 
-	//m_expression.traverseArrowKey();
-
 	if (button[index].getText() == "=")
 	{
 		parseExpression();
 	}
 	else if (button[index].getText() == mul)
 	{
-		m_expression.insertIndex("*");
+		m_expression.insertIndex("*", m_operList);
 	}
 	else if (button[index].getText() == Constants::div)
 	{
-		m_expression.insertIndex("/");
+		m_expression.insertIndex("/", m_operList);
 	}
 	else if (button[index].getText() == backspace)
 	{
@@ -195,7 +171,7 @@ void  Calculator::express(std::array<Button, 24>& button, std::ptrdiff_t index) 
 		if (m_expression.endIndex())
 			m_expression.updateIndex();
 
-		m_expression.insertIndex(button[index].getText());
+		m_expression.insertIndex(button[index].getText(), m_operList);
 	}
 }
 
@@ -207,7 +183,7 @@ void Calculator::express(int key, std::array<Button, 24>& button) //keyboard inp
 	std::string stringKey{ static_cast<char>(key) };
 	for (std::ptrdiff_t index{ 0 }; index < std::ssize(button); ++index)
 	{
-		if (button[index].getText().front() == stringKey.front())
+		if (button[index].getText() == stringKey)
 		{
 			button[index].colourChange(RED);
 			express(button, index);
@@ -216,13 +192,13 @@ void Calculator::express(int key, std::array<Button, 24>& button) //keyboard inp
 		if (button[index].getText() == Constants::div && key == 47) // "/" unicode key
 		{
 			button[index].colourChange(RED);
-			m_expression.insertIndex(stringKey);
+			m_expression.insertIndex("/", m_operList);
 			break;
 		}
 		if (button[index].getText() == Constants::mul && key == 42) // "*" unicode key
 		{
 			button[index].colourChange(RED);
-			m_expression.insertIndex(stringKey);
+			m_expression.insertIndex("*", m_operList);
 			break;
 		}
 		if (button[index].getText() == Constants::backspace && IsKeyPressed(KEY_BACKSPACE))
@@ -241,7 +217,6 @@ void Calculator::express(int key, std::array<Button, 24>& button) //keyboard inp
 }
 
 //outer class -------------------------------------
-
 int arithmetic(const std::string& op, const std::string& operand1, const std::string& operand2)
 {
 	int num1{ std::stoi(operand1) }; //use variation of std::stol for float/doubles
