@@ -30,9 +30,9 @@ public:
 
 	const std::string& back() const { return m_text.back(); }
 	std::string& back() { return m_text.back(); }
-	const bool empty() const { return m_text.empty(); }
+	constexpr bool empty() const { return m_text.empty(); }
 	void clear() { m_text.clear(); }
-	const std::ptrdiff_t ssize() const { return std::ssize(m_text); }
+	constexpr std::ptrdiff_t ssize() const { return std::ssize(m_text); }
 
 	void pop_back() { m_text.pop_back(); }
 	void push_back(const std::string& text) { m_text.push_back(text); }
@@ -42,10 +42,13 @@ public:
 
 	void updateIndex()
 	{
+		std::ptrdiff_t prevIndex{ m_index.outIndex };
 		if (!m_endIndex || m_text.empty())
 			return;
 		m_index.outIndex = std::ssize(m_text) - 1;
 		//m_index.inIndex = 0;
+		if (m_index.outIndex != prevIndex) //outIndex moved element therefore inIndex should be reset
+			m_index.inIndex = 0;
 	}
 
 	void traverseArrowKey() //if arrow keys are pressed move the " | " left/right. 
@@ -147,7 +150,7 @@ public:
 		bool isOperator{ false };
 		for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(operList); ++opIndex)
 		{
-			if (ch == operList[opIndex])
+			if (ch == operList[opIndex] || ch == "(" || ch == ")")
 				isOperator = true;
 		}
 
@@ -166,7 +169,7 @@ public:
 				m_text.push_back(ch);
 				++m_index.outIndex;
 			}
-			else if (std::ssize(m_text[m_index.outIndex]) - 1 == m_index.inIndex)
+			else if (std::ssize(m_text[m_index.outIndex]) - 1 == m_index.inIndex) //add to existing element
 			{
 				m_text[m_index.outIndex].push_back(ch.front());
 				if (m_endIndex)
@@ -174,13 +177,17 @@ public:
 			}
 			else
 				m_text[m_index.outIndex][m_index.inIndex] = ch.front();
-			//to do: if index is operator, push to index + 1, set index to index + 1
 		}
 		else if (isOperator)
 		{
 			if (std::ssize(m_text) - 1 == m_index.outIndex)
 			{
 				m_text.push_back(ch);
+			}
+			else if (std::ssize(m_text) == m_index.outIndex) //create new element
+			{
+				m_text.push_back(ch);
+				++m_index.outIndex;
 			}
 		}
 	}
