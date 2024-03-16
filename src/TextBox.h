@@ -122,12 +122,15 @@ public:
 
 		if (m_drawingState && !m_rightAlign)  //draw text left-aligned from m_x
 		{
-			for (std::ptrdiff_t index{ 0 }; index < length; ++index)
+			for (std::ptrdiff_t outIndex{ 0 }; outIndex < length; ++outIndex)
 			{
-				DrawTextEx(font, m_text[index].c_str(), Vector2(x += 15, m_y), 30, 0, RAYWHITE);
+				for (std::ptrdiff_t inIndex{ 0 }; inIndex < std::ssize(m_text[outIndex]); ++inIndex)
+				{
+					DrawTextEx(font, std::string(1, m_text[outIndex][inIndex]).c_str(), Vector2(x += 15, m_y), 30, 2, RAYWHITE);
+				}
 			}
 		}
-		else if (!m_drawingState && !m_rightAlign)
+		else if (!m_drawingState && !m_rightAlign) //draw text left aligned from m_x up to a certain point, use arrow keys to traverse. 
 		{
 			float excessText{ measuredString - m_width };
 			for (std::ptrdiff_t index{ 0 }; index < length; ++index)
