@@ -71,27 +71,20 @@ public:
 		}
 		if (IsKeyPressed(KEY_LEFT))
 		{
-			if (!m_text.empty() && std::ssize(m_text) > m_index.outIndex && m_index.outIndex > -1)
+			if (!m_text.empty() && m_index.outIndex > -1)
 			{
-				if (std::ssize(m_text[m_index.outIndex]) > m_index.inIndex && m_index.inIndex > -1)
+				if (m_index.inIndex > 0)
 				{
 					m_index.inIndex -= 1;
 				}
-				else if (m_index.outIndex > -1 && std::ssize(m_text[m_index.inIndex]) == m_index.outIndex)
+				else if (m_index.outIndex > 0 && m_index.inIndex == 0)
 				{
 					m_index.outIndex -= 1;
 				}
 				m_endIndex = false;
 			}
 		}
-		if (!m_text.empty())
-		{
-			if (std::ssize(m_text) < m_index.outIndex)
-				m_index.outIndex = std::ssize(m_text);
-
-			if (std::ssize(m_text[m_index.outIndex]) < m_index.inIndex)
-				m_index.inIndex = std::ssize(m_text[m_index.outIndex]);
-		}
+		
 		if (m_text.empty())
 		{
 			m_index.outIndex = 0;
@@ -127,6 +120,10 @@ public:
 				for (std::ptrdiff_t inIndex{ 0 }; inIndex < std::ssize(m_text[outIndex]); ++inIndex)
 				{
 					DrawTextEx(font, std::string(1, m_text[outIndex][inIndex]).c_str(), Vector2(x += 15, m_y), 30, 2, RAYWHITE);
+					if (outIndex == m_index.outIndex && inIndex == m_index.inIndex) //draw "|"
+					{
+						DrawTextEx(font, "|", Vector2(x, m_y), 30, 0, RED);
+					}
 				}
 			}
 		}
