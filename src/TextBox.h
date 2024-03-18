@@ -92,7 +92,7 @@ public:
 			m_endIndex = true;
 		}
 
-		if (!m_text.empty() && std::ssize(m_text) == m_index.outIndex && std::ssize(m_text.back()) == m_index.inIndex)
+		if (!m_text.empty() && std::ssize(m_text) - 1 == m_index.outIndex && std::ssize(m_text.back()) - 1 == m_index.inIndex)
 			m_endIndex = true;
 	}
 
@@ -122,7 +122,7 @@ public:
 					DrawTextEx(font, std::string(1, m_text[outIndex][inIndex]).c_str(), Vector2(x += 15, m_y), 30, 2, RAYWHITE);
 					if (outIndex == m_index.outIndex && inIndex == m_index.inIndex) //draw "|"
 					{
-						DrawTextEx(font, "|", Vector2(x, m_y), 30, 0, RED);
+						DrawTextEx(font, "|", Vector2(x + 15, m_y), 30, 0, RED);
 					}
 				}
 			}
