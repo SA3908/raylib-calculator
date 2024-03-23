@@ -58,7 +58,7 @@ public:
 
 			if (!m_text.empty() && std::ssize(m_text) > m_index.outIndex)
 			{
-				if (std::ssize(m_text[m_index.outIndex]) > m_index.inIndex)
+				if (std::ssize(m_text[m_index.outIndex]) - 1 > m_index.inIndex)
 				{
 					m_index.inIndex += 1;
 				}
