@@ -180,14 +180,9 @@ public:
 		}
 		else if (isOperator)
 		{
-			if (std::ssize(m_text) - 1 == m_index.outIndex)
+			if (std::ssize(m_text) - 1 == m_index.outIndex) //create new element with operator
 			{
 				m_text.push_back(ch);
-			}
-			else if (std::ssize(m_text) == m_index.outIndex) //create new element
-			{
-				m_text.push_back(ch);
-				++m_index.outIndex;
 			}
 		}
 	}
