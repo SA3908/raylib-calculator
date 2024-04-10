@@ -14,11 +14,13 @@ class TextBox //display, align and manoeuvre through text
 public:
 	TextBox()
 	{
+		m_text.reserve(10);
 	}
 
 	TextBox(float x, float y, int width, int height, bool rightAlign = false)
 		:m_x{ x }, m_y{ y }, m_width{ width }, m_height{ height }, m_rightAlign{ rightAlign }
 	{
+		m_text.reserve(10);
 	}
 
 	std::vector<std::string>& getText() { return m_text; }
