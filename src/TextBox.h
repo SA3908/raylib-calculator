@@ -80,6 +80,7 @@ public:
 				else if (m_index.outIndex < std::ssize(m_text) - 1 && m_index.inIndex == std::ssize((m_text[m_index.outIndex])) - 1)
 				{
 					m_index.outIndex += 1;
+					m_index.inIndex = 0;
 				}
 			}
 			m_endIndex = false;
@@ -95,7 +96,7 @@ public:
 				else if (m_index.outIndex > 0 && m_index.inIndex == 0)
 				{
 					m_index.outIndex -= 1;
-					m_index.inIndex = std::ssize(m_text[m_index.outIndex]);
+					m_index.inIndex = std::ssize(m_text[m_index.outIndex]) - 1;
 				}
 				m_endIndex = false;
 			}
