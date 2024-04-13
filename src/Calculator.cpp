@@ -160,7 +160,7 @@ void  Calculator::express(std::array<Button, 24>& button, std::ptrdiff_t index) 
 	else if (button[index].getText() == backspace)
 	{
 		if (!m_expression.empty())
-			m_expression.pop_back();
+			m_expression.deleteIndex();
 	}
 	else if (button[index].getText() == "CE")
 	{
@@ -205,7 +205,7 @@ void Calculator::express(int key, std::array<Button, 24>& button) //keyboard inp
 		{
 			button[index].colourChange(RED);
 			if (!m_expression.empty())
-				m_expression.pop_back();
+				m_expression.deleteIndex();
 		}
 		if (button[index].getText() == "CE" && IsKeyPressed(KEY_C))
 		{

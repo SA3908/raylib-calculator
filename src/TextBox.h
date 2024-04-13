@@ -42,15 +42,28 @@ public:
 
 
 
-	void updateIndex()
+	void updateIndex() //ensure that m_index catches up to final value of expression if m_endIndex is true
 	{
-		std::ptrdiff_t prevIndex{ m_index.outIndex };
 		if (!m_endIndex || m_text.empty())
 			return;
-		m_index.outIndex = std::ssize(m_text) - 1;
-		//m_index.inIndex = 0;
-		if (m_index.outIndex != prevIndex) //outIndex moved element therefore inIndex should be reset
+
+		std::ptrdiff_t prevIndex{ m_index.outIndex };
+
+		m_index.outIndex = std::ssize(m_text) - 1; //moves outIndex to the last element, even if the last element is empty
+		if (m_index.outIndex > prevIndex && std::ssize(m_text.back()) != 0) //outIndex moved element therefore inIndex should be reset
+		{
 			m_index.inIndex = 0;
+		}
+		else if (m_index.outIndex < prevIndex && std::ssize(m_text.back()) != 0)
+		{
+			m_index.inIndex = std::ssize(m_text[m_index.outIndex]) - 1;
+			m_endIndex = false; //user moved cursor left so they are not at the end of the expression anymore
+		}
+		else if (m_index.outIndex > prevIndex && std::ssize(m_text.back()) == 0) //user deleted an operand and an element is before the deleted operand
+		{
+			m_index.outIndex = prevIndex; //go back to the element before the previously deleted element.
+			m_index.inIndex = std::ssize(m_text[m_index.outIndex]) - 1; //make sure we are at the last digit/operator because the outer index is moving left.
+		}
 	}
 
 	void traverseArrowKey() //if arrow keys are pressed move the " | " left/right. 
@@ -170,7 +183,12 @@ public:
 			if (std::ssize(m_text) == m_index.outIndex) //create new element
 			{
 				m_text.push_back(ch);
-				++m_index.outIndex;
+				if (std::ssize(m_text) != 1)
+					++m_index.outIndex;
+			}
+			else if (std::ssize(m_text[m_index.outIndex]) == 0) //an element exists however, that element is empty.
+			{
+				m_text[m_index.outIndex] = ch; //override the empty string element with this number
 			}
 			else if (std::ssize(m_text[m_index.outIndex]) - 1 == m_index.inIndex) //add to existing element
 			{
@@ -179,7 +197,10 @@ public:
 					++m_index.inIndex;
 			}
 			else
-				m_text[m_index.outIndex][m_index.inIndex] = ch.front();
+			{
+				m_text[m_index.outIndex].insert(m_index.inIndex + 1, ch);
+				m_index.inIndex++;
+			}
 		}
 		else if (isOperator)
 		{
@@ -187,11 +208,24 @@ public:
 			{
 				m_text.push_back(ch);
 			}
+			else if (!m_text.empty() && !m_text[m_index.outIndex].empty())
+			{
+				if (std::ssize(m_text[m_index.outIndex + 1]) == 0) //an element exists however, that element is empty.
+				{
+					m_text[m_index.outIndex + 1] = ch; //override the empty string element with this operator.
+					++m_index.outIndex;
+				}
+			}
 		}
+		updateIndex();
 	}
 	void deleteIndex() //remove character at m_index
 	{
-
+		m_text[m_index.outIndex].erase(m_index.inIndex);
+		if (m_index.inIndex == 0 && m_index.outIndex > 0)
+			m_index.outIndex--;
+		else if (m_index.inIndex > 0)
+			m_index.inIndex--;
 	}
 	
 private:
