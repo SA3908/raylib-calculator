@@ -16,7 +16,7 @@ int main()
 	std::string workingDir{GetWorkingDirectory()};
 	std::string assets{ workingDir + "/assets/" };
 	
-	Font fontCalculator = LoadFontEx((assets + "Symbola.ttf").data(), 30, 0, 10378);
+	Font fontCalculator = LoadFontEx((assets + "Symbola-modified.ttf").data(), 30, 0, 10378);
 	Color operatorColour{ 247, 184, 1, 255 };
 	
 	double timer{};
