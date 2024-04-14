@@ -214,7 +214,6 @@ public:
 				if (std::ssize(m_text[m_index.outIndex + 1]) == 0) //an element exists however, that element is empty.
 				{
 					m_text[m_index.outIndex + 1] = ch; //override the empty string element with this operator.
-					++m_index.outIndex;
 				}
 			}
 		}
