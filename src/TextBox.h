@@ -116,7 +116,10 @@ public:
 	void drawText(Font& font)
 	{
 		if (m_text.empty())
+		{
+			m_endIndex = true;
 			return;
+		}
 
 		std::ptrdiff_t length{ std::ssize(m_text) };
 		float measuredString{};
