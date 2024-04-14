@@ -4,34 +4,46 @@ This is a simple calculator created as a project.
 
 A C++ project using raylib. 
 
-## Build
-1. Install the  latest version of [CMake](https://cmake.org/download/).
-2. Install a C++ compiler and debugger.
-3. Clone this repository
-## Windows
+## Getting started
+This section shows you how to setup this project on your computer.
 
-### Visual Studio
-[Visual Studio](https://visualstudio.microsoft.com/) is an IDE by Microsoft, a free version is available called community edition. It is somewhat resource intensive and a modern computer should be used.
+### Prerequisites
+- **C++ compiler** - must be C++20 standard. As of now, this project will still work with basic C++20 compiler support.
+- **CMake 3.11+** - install latest version available [here](https://cmake.org/download/)
+  
+> **NOTE**: Your build system of choice must be listed [here](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html).
 
-Make sure **"Desktop development with C++"** and **"Linux and Embedded Development with C++ is installed"**. find this repository you cloned and open it in Visual Studio and it will automatically configure. 
-### Ninja
-Install [Ninja](https://github.com/ninja-build/ninja/releases) build tool.
+**Example IDEs:**
 
-Run this inside this repository: 
+MSVC compiler bundled in [Visual Studio](https://visualstudio.microsoft.com/) is a popular choice for Windows.
+
+[Qt creator](https://www.qt.io/product/development-tools) is available for Windows/Linux, 
+with an [offline installer](https://www.qt.io/offline-installers),
+where you can avoid creating a QT account if you turn off your internet connection before installing.
+
+### Installing
+```sh
+git clone https://github.com/SA3908/raylib-calculator.git
 ```
-cmake -S . -B build -G "Ninja"
+
+## Build
+- Use build system of choice from [here](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html)
+- Make sure that build system is installed
+```sh
+cmake -S . -B build -G "<build system>"
 cmake --build build && cd build
 ninja
 ```
 
-## Linux
-Install **Make** build tool.
+For **Linux users**, excluding the generator option defaults to **Linux makefiles** and defaults to **MSbuild** for Windows users. 
 
-Visit [Working on GNU Linux](https://github.com/raysan5/raylib/wiki/Working-on-GNU-Linux) in raylib repository and follow the installation proccess for the libraries raylib requires.
+### Ninja
+- Ninja build system is cross-platform
+- Install [Ninja](https://github.com/ninja-build/ninja/releases) build tool.
 
-Run:
-```
-cmake -S . -B build
+Run this inside this repository: 
+```sh
+cmake -S . -B build -G "Ninja"
 cmake --build build && cd build
-make
+ninja
 ```
