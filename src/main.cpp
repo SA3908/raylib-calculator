@@ -7,7 +7,7 @@
 int main()
 {
 	// set up the window
-	int width = 900;
+	int width = 550;
 	int height = 785;
 
 	InitWindow(width, height, "Calculator");
