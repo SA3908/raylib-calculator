@@ -141,7 +141,7 @@ void Calculator::calculate() //evaluate postfix expression
 }
 
 
-void  Calculator::express(std::array<Button, 24>& button, std::ptrdiff_t index) //GUI butttons
+void  Calculator::express(std::array<Button, 23>& button, std::ptrdiff_t index) //GUI butttons
 {
 	using namespace Constants;
 
@@ -175,7 +175,7 @@ void  Calculator::express(std::array<Button, 24>& button, std::ptrdiff_t index) 
 	}
 }
 
-void Calculator::express(int key, std::array<Button, 24>& button) //keyboard input
+void Calculator::express(int key, std::array<Button, 23>& button) //keyboard input
 {
 
 	m_expression.traverseArrowKey();

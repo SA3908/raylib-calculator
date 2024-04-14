@@ -23,10 +23,9 @@ int main()
 	double previousTime{};
 	
 	
-	std::array<Button, 24> calcButton
+	std::array<Button, 23> calcButton
 	{ {
 		//row 1
-		{10, 700, 130, 90,  "+/-"},	//minus/add operator
 		{145, 700, 130, 90, "0"},	//number 0
 		{280, 700, 130, 90, "."},	//decimal point .
 		{415, 700, 130, 90, "=", Color{100, 190, 35, 225}, BLACK},	//operator =
@@ -59,6 +58,7 @@ int main()
 	constexpr auto calcButtonSize{ std::ssize(calcButton) };
 	Calculator session{ {1, 20, 542, 100 }, {480, 190, 542, 100, true } };
 	
+	Button placeholder{ 10, 700, 130, 90,  "" }; //button added for design purposes, may be used in the future.
 	//loop
 	while (!WindowShouldClose())
 	{
@@ -73,11 +73,18 @@ int main()
 			for (std::ptrdiff_t index{ 0 }; index < calcButtonSize; ++index)
 			{
 				calcButton[index].colourChange();	
+				placeholder.colourChange();
 			}
 		}
 
 		DrawRectangleLines(4, 8, 542, 785, BLACK); //black outline for calculator
 		
+		placeholder.drawRectButton();
+		if (placeholder.buttonPressed())
+		{
+			previousTime = timer;
+			placeholder.colourChange(BLUE);
+		}
 
 		for (std::ptrdiff_t index{ 0 }; index < calcButtonSize; ++index) //draw rectangular buttons then check if the buttons are pressed
 		{

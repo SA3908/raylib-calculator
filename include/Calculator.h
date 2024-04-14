@@ -27,8 +27,8 @@ public:
 	void parseExpression(); //convert infix expression to postfix expression
 	int precedency(const std::string& oldOperator, const std::string& newOperator); //return precedence level
 
-	void express(std::array<Button, 24>& button, std::ptrdiff_t index); //add numbers & operators to calculator with on-screen buttons
-	void express(int key, std::array<Button, 24>& button);		   //add numbers & operators to calculator with keyboard buttons
+	void express(std::array<Button, 23>& button, std::ptrdiff_t index); //add numbers & operators to calculator with on-screen buttons
+	void express(int key, std::array<Button, 23>& button);		   //add numbers & operators to calculator with keyboard buttons
 
 	void calculate(); //evaluate postfix expression
 	
