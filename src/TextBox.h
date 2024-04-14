@@ -221,7 +221,7 @@ public:
 	}
 	void deleteIndex() //remove character at m_index
 	{
-		m_text[m_index.outIndex].erase(m_index.inIndex);
+		m_text[m_index.outIndex].erase(m_index.inIndex, 1);
 		if (m_index.inIndex == 0 && m_index.outIndex > 0)
 			m_index.outIndex--;
 		else if (m_index.inIndex > 0)
