@@ -22,12 +22,11 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
 endif()
 
 include_directories(
-       #${PROJECT_SOURCE_DIR}/include
+       ${PROJECT_SOURCE_DIR}/include
         ${PROJECT_SOURCE_DIR}/src
 )
 file(GLOB all_SRCS
-        #"${PROJECT_SOURCE_DIR}/include/*.h"
-        #"${PROJECT_SOURCE_DIR}/include/*.hpp"
+        "${PROJECT_SOURCE_DIR}/include/*.h"
         "${PROJECT_SOURCE_DIR}/src/*.cpp"
         )
 add_custom_target(copy_assets
