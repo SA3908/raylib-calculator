@@ -1,8 +1,16 @@
 # C++ calculator using raylib
+## Overview
+This is a simple calculator created as a project programmed in C++ using raylib for the GUI.
 
-This is a simple calculator created as a project.
 
-A C++ project using raylib. 
+
+> **NOTE: I started this project 4 months into learning C++, bugs are expected and do not think too highly of it.**
+## Features
+- [x] **Evaluate Arithmetics**
+- [x] Touch screen & mouse support with **GUI buttons**
+- [x] **Keyboard** and **numpad** support for fast typing
+- [x] Support for **arrow keys** to traverse through the **expression** you are typing
+
 
 ## Getting started
 This section shows you how to setup this project on your computer.
@@ -27,23 +35,17 @@ git clone https://github.com/SA3908/raylib-calculator.git
 ```
 
 ## Build
-- Use build system of choice from [here](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html)
-- Make sure that build system is installed
+1. Use **build system** of choice from [here](https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html).
+2. Ensure sure that build system of choice is installed.
+3. ```cd``` into this **repository** you cloned.
+4. Open a terminal and run a **CMake** routine similar to below:
 ```sh
 cmake -S . -B build -G "<build system>"
 cmake --build build && cd build
-ninja
+<build system>
 ```
 
-For **Linux users**, excluding the generator option defaults to **Linux makefiles** and defaults to **MSbuild** for Windows users. 
 
-### Ninja
-- Ninja build system is cross-platform
-- Install [Ninja](https://github.com/ninja-build/ninja/releases) build tool.
 
-Run this inside this repository: 
-```sh
-cmake -S . -B build -G "Ninja"
-cmake --build build && cd build
-ninja
-```
+For **Linux users**, excluding the generator option defaults to **Linux makefiles**. For Windows users it defaults to **MSbuild**. 
+
