@@ -90,11 +90,11 @@ void TextBox::drawText(Font& font)
 	}
 
 	std::ptrdiff_t length{ std::ssize(m_text) };
-	float measuredString{};
-	float x{ m_x };
+	float measuredString{}; //width of m_text 
+	float x{ m_x }; //temporary value modified by the drawing loops
 	for (std::ptrdiff_t index{ 0 }; index < length; ++index)
 	{
-		measuredString += MeasureTextEx(font, m_text[index].c_str(), 30, 0).x;
+		measuredString += MeasureTextEx(font, m_text[index].c_str(), font.baseSize, 0).x;
 	}
 	if (length * 20 >= m_width) //ensure text width does not exceed calculator bounds
 		m_drawingState = false;
@@ -107,6 +107,14 @@ void TextBox::drawText(Font& font)
 		{
 			for (std::ptrdiff_t inIndex{ 0 }; inIndex < std::ssize(m_text[outIndex]); ++inIndex)
 			{
+				if (m_text[outIndex][inIndex] == '-')
+					x += 2;
+				if (outIndex >= 2 && inIndex == 0)
+				{
+					if (m_text[outIndex - 1] == "+") //to add more spacing to the digit after a "+" 
+						x += 5;
+				}
+
 				DrawTextEx(font, std::string(1, m_text[outIndex][inIndex]).c_str(), Vector2(x += 15, m_y), 30, 2, RAYWHITE);
 				if (outIndex == m_index.outIndex && inIndex == m_index.inIndex) //draw "|"
 				{
