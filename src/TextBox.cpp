@@ -177,9 +177,9 @@ void TextBox::insertIndex(const std::string& ch, const std::vector<std::string>&
 			if (m_endIndex)
 				++m_index.inIndex;
 		}
-		else
+		else if (std::ssize(m_text[m_index.outIndex]) == m_index.inIndex) //adds to existing element but m_index.inIndex did not decrease correctly
 		{
-			m_text[m_index.outIndex].insert(m_index.inIndex + 1, ch);
+			m_text[m_index.outIndex].insert(m_index.inIndex, ch);
 			m_index.inIndex++;
 		}
 	}
