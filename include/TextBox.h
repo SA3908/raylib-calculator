@@ -3,6 +3,8 @@
 #include <vector>
 #include <raylib.h>
 
+class Calculator;
+
 struct IndexPair //iterate through an element of an element within an array
 {
 	std::ptrdiff_t inIndex{}; //index within outIndex (for string arrays/vectors)
@@ -11,6 +13,7 @@ struct IndexPair //iterate through an element of an element within an array
 
 class TextBox //display, align and manoeuvre through text
 {
+	friend void debug(Calculator& session);
 public:
 	TextBox()
 	{
