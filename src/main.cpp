@@ -127,14 +127,14 @@ int main()
 }
 void debug(Calculator& session)
 {
-	std::cout << "session.m_expression.m_text: " << '\n';
+	std::cout << "session.m_expression.m_text: " << '\n\t';
 	for (std::ptrdiff_t index{ 0 }; index < session.m_expression.ssize(); ++index)
 	{
-		std::cout << session.m_expression[index] << " ";
+		std::cout <<  session.m_expression[index] << " ";
 	}
-	std::cout << "\nsession.m_expression.m_index = (outIndex = " << session.m_expression.m_index.outIndex << ", inIndex = " << session.m_expression.m_index.inIndex << ")";
-	std::cout << "\nsession.m_expression.m_endIndex = " << session.m_expression.m_endIndex;
-	std::cout << '\n' << "session.m_output: " << '\n';
+	std::cout << "\n\tsession.m_expression.m_index = (outIndex = " << session.m_expression.m_index.outIndex << ", inIndex = " << session.m_expression.m_index.inIndex << ")";
+	std::cout << "\n\tsession.m_expression.m_endIndex = " << session.m_expression.m_endIndex;
+	std::cout << '\n' << "session.m_output: " << '\n\t';
 	for (std::ptrdiff_t index{ 0 }; index < std::ssize(session.m_output); ++index)
 	{
 		std::cout << session.m_output[index] << " ";
