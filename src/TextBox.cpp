@@ -30,7 +30,8 @@ void TextBox::updateIndex()
 	else if (m_index.outIndex > prevIndex && std::ssize(m_text.back()) == 0) //user deleted an operand and an element is before the deleted operand
 	{
 		m_index.outIndex = prevIndex; //go back to the element before the previously deleted element.
-		m_index.inIndex = std::ssize(m_text[m_index.outIndex]) - 1; //make sure we are at the last digit/operator because the outer index is moving left.
+		if (m_index.inIndex > 0)
+			m_index.inIndex = std::ssize(m_text[m_index.outIndex]) - 1; //make sure we are at the last digit/operator because the outer index is moving left.
 	}
 }
 
@@ -45,11 +46,20 @@ void TextBox::traverseArrowKey()
 			{
 				m_index.inIndex += 1;
 			}
-			else if (m_index.outIndex < std::ssize(m_text) - 1 && m_index.inIndex == std::ssize((m_text[m_index.outIndex])) - 1)
+			else if (m_index.outIndex < std::ssize(m_text) - 1 && m_index.inIndex == std::ssize((m_text[m_index.outIndex])) - 1 && std::ssize(m_text[m_index.outIndex + 1]) != 0)
 			{
 				m_index.outIndex += 1;
 				m_index.inIndex = 0;
 			}
+			else if (m_index.outIndex < std::ssize(m_text) - 1 && std::ssize(m_text[m_index.outIndex + 1]) == 0) //next element from outIndex is empty and we should skip to the next element that isn't empty
+			{
+				for (std::ptrdiff_t index{ m_index.outIndex }; index < std::ssize(m_text); ++index)
+				{
+					if (std::ssize(m_text[index]) != 0)
+						m_index.outIndex = index;
+				}
+			}
+
 		}
 		m_endIndex = false;
 	}
@@ -61,10 +71,18 @@ void TextBox::traverseArrowKey()
 			{
 				m_index.inIndex -= 1;
 			}
-			else if (m_index.outIndex > 0 && m_index.inIndex == 0)
+			else if (m_index.outIndex > 0 && m_index.inIndex == 0 && std::ssize(m_text[m_index.outIndex - 1]) != 0)
 			{
 				m_index.outIndex -= 1;
 				m_index.inIndex = std::ssize(m_text[m_index.outIndex]) - 1;
+			}
+			else if (m_index.outIndex > 0 && std::ssize(m_text[m_index.outIndex - 1]) == 0)
+			{
+				for (std::ptrdiff_t index{ m_index.outIndex }; index >= 0; --index)
+				{
+					if (std::ssize(m_text[index]) != 0)
+						m_index.outIndex = index;
+				}
 			}
 			m_endIndex = false;
 		}
@@ -114,7 +132,11 @@ void TextBox::drawText(Font& font)
 					if (m_text[outIndex - 1] == "+") //to add more spacing to the digit after a "+" 
 						x += 5;
 				}
-
+				if (inIndex >= 1)
+				{
+					if (m_text[outIndex][inIndex - 1] == '.') //reduce spacing when there is a decimal point before a number
+						x -= 8;
+				}
 				DrawTextEx(font, std::string(1, m_text[outIndex][inIndex]).c_str(), Vector2(x += 15, m_y), 30, 2, RAYWHITE);
 				if (outIndex == m_index.outIndex && inIndex == m_index.inIndex) //draw "|"
 				{
@@ -167,7 +189,7 @@ void TextBox::insertIndex(const std::string& ch, const std::vector<std::string>&
 			if (std::ssize(m_text) != 1)
 				++m_index.outIndex;
 		}
-		else if (std::ssize(m_text[m_index.outIndex]) == 0) //an element exists however, that element is empty.
+		else if (std::ssize(m_text[m_index.outIndex]) == 0) // the current string element is empty
 		{
 			m_text[m_index.outIndex] = ch; //override the empty string element with this number
 		}
@@ -191,10 +213,19 @@ void TextBox::insertIndex(const std::string& ch, const std::vector<std::string>&
 		}
 		else if (!m_text.empty() && !m_text[m_index.outIndex].empty())
 		{
-			if (std::ssize(m_text[m_index.outIndex + 1]) == 0) //an element exists however, that element is empty.
+			if (std::ssize(m_text[m_index.outIndex + 1]) == 0) //an empty string element exists after the current element.
 			{
 				m_text[m_index.outIndex + 1] = ch; //override the empty string element with this operator.
 			}
+		}
+		else if (std::ssize(m_text) == m_index.outIndex && (ch == "(" || ch == ")")) //to allow only brackets to be placed at the start of m_text
+		{
+			m_text.push_back(ch);
+			++m_index.outIndex;
+		}
+		else if (std::ssize(m_text[m_index.outIndex]) == 0 && (ch == "(" || ch == ")")) // the current string element is empty
+		{
+			m_text[m_index.outIndex] = ch; //override the empty string element with brackets
 		}
 	}
 	updateIndex();

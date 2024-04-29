@@ -99,7 +99,15 @@ int Calculator::precedency(const std::string& oldOperator, const std::string& ne
 	return lower;
 }
 
-int arithmetic(const std::string& op, const std::string& operand1, const std::string& operand2);
+template <typename T, typename U>
+std::enable_if_t<std::is_floating_point<T>::value || std::is_floating_point<U>::value, double>
+arithmetic(const std::string& op, std::pair<T, U> num);
+
+template <typename T, typename U>
+std::enable_if_t<std::is_integral<T>::value && std::is_integral<U>::value, int>
+arithmetic(const std::string& op, std::pair<T, U> num);
+
+bool isDecimal(const std::string& operand);
 
 void Calculator::calculate() //evaluate postfix expression
 {
@@ -107,8 +115,6 @@ void Calculator::calculate() //evaluate postfix expression
 		return;
 
 	std::ptrdiff_t length{ std::ssize(m_output) };
-	std::string firstOperand{};
-	std::string secondOperand{};
 
 	for (std::ptrdiff_t index{ 0 }; index < length; ++index)
 	{
@@ -117,26 +123,46 @@ void Calculator::calculate() //evaluate postfix expression
 			m_evaluated.emplace_back(m_output[index]);
 		}
 
-
 		for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(m_operList); ++opIndex)
 		{
 			if (m_operList[opIndex] == m_output[index])
 			{
 				assert(!m_evaluated.empty()); //if empty, user input operator before first operand
 
-				firstOperand.append(m_evaluated.back()); 
-				m_evaluated.pop_back();
-				secondOperand.append(m_evaluated.back());
-				m_evaluated.pop_back();
-
-				m_evaluated.emplace_back(std::to_string(arithmetic(m_operList[opIndex], firstOperand, secondOperand)));
-
-				firstOperand.clear();
-				secondOperand.clear();
+				if (isDecimal(m_evaluated.back()) && isDecimal(m_evaluated[m_evaluated.ssize() - 2]))
+				{
+					std::pair<double, double> numPair{ std::stod(m_evaluated.back()), std::stod(m_evaluated[m_evaluated.ssize() - 2]) };
+					m_evaluated.pop_back();
+					m_evaluated.pop_back();
+					m_evaluated.emplace_back(std::to_string(arithmetic(m_operList[opIndex], numPair)));
+				}
+				else if (!isDecimal(m_evaluated.back()) && isDecimal(m_evaluated[m_evaluated.ssize() - 2]))
+				{
+					std::pair<int, double> numPair{ std::stoi(m_evaluated.back()), std::stod(m_evaluated[m_evaluated.ssize() - 2]) };
+					m_evaluated.pop_back();
+					m_evaluated.pop_back();
+					m_evaluated.emplace_back(std::to_string(arithmetic(m_operList[opIndex], numPair)));
+				}
+				else if (isDecimal(m_evaluated.back()) && !isDecimal(m_evaluated[m_evaluated.ssize() - 2]))
+				{
+					std::pair<double, int> numPair{ std::stod(m_evaluated.back()), std::stoi(m_evaluated[m_evaluated.ssize() - 2]) };
+					m_evaluated.pop_back();
+					m_evaluated.pop_back();
+					m_evaluated.emplace_back(std::to_string(arithmetic(m_operList[opIndex], numPair)));
+				}
+				else if (!isDecimal(m_evaluated.back()) && !isDecimal(m_evaluated[m_evaluated.ssize() - 2]))
+				{
+					std::pair<int, int> numPair{ std::stoi(m_evaluated.back()), std::stoi(m_evaluated[m_evaluated.ssize() - 2]) };
+					m_evaluated.pop_back();
+					m_evaluated.pop_back();
+					if (m_operList[opIndex] == "/")
+						m_evaluated.emplace_back(std::to_string(arithmetic<double, double>(m_operList[opIndex], numPair))); //force division to always be double for accuracy
+					else
+						m_evaluated.emplace_back(std::to_string(arithmetic(m_operList[opIndex], numPair)));
+				}
 			}
 		}
 	}
-
 	m_calculated = true;
 }
 
@@ -217,20 +243,49 @@ void Calculator::express(int key, std::array<Button, 23>& button) //keyboard inp
 }
 
 //outer class -------------------------------------
-int arithmetic(const std::string& op, const std::string& operand1, const std::string& operand2)
-{
-	int num1{ std::stoi(operand1) }; //use variation of std::stol for float/doubles
-	int num2{ std::stoi(operand2) };
 
+bool isDecimal(const std::string& operand) 
+{
+	for (std::ptrdiff_t index{ 0 }; index < std::ssize(operand); ++index)
+	{
+		if (operand[index] == '.')
+		{
+			return true; //early return because we know the number is a decimal
+		}
+	}
+	return false;
+}
+
+template <typename T, typename U>
+std::enable_if_t<std::is_floating_point<T>::value || std::is_floating_point<U>::value, double>
+arithmetic(const std::string& op, std::pair<T, U> num)
+{
 	if (op == "+")
-		return num1 + num2;
+		return num.first + num.second;
 	else if (op == "-")
-		return num2 - num1;
+		return num.second - num.first;
 	else if (op == "*")
-		return num1 * num2;
+		return num.first * num.second;
 	else if (op == "/")
-		return (num1 == 0 || num2 == 0) ? 0 : num2 / num1;
+		return (num.first == 0 || num.second == 0) ? 0 : num.second / num.first;
 	else if (op == "^")
-		return pow(num2, num1);
+		return pow(num.second, num.first);
+	return 0;
+}
+
+template <typename T, typename U>
+std::enable_if_t<std::is_integral<T>::value && std::is_integral<U>::value, int>
+arithmetic(const std::string& op, std::pair<T, U> num)
+{
+	if (op == "+")
+		return num.first + num.second;
+	else if (op == "-")
+		return num.second - num.first;
+	else if (op == "*")
+		return num.first * num.second;
+	else if (op == "/")
+		return (num.first == 0 || num.second == 0) ? 0 : num.second / num.first;
+	else if (op == "^")
+		return pow(num.second, num.first);
 	return 0;
 }
