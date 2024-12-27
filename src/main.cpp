@@ -11,19 +11,19 @@ int main()
 	int height = 785;
 
 	InitWindow(width, height, "Calculator");
-	SetTargetFPS(60);
+	SetTargetFPS(60); 
 	
-	std::string workingDir{GetWorkingDirectory()};
-	std::string assets{ workingDir + "/assets/" };
+	std::string workingDir{GetWorkingDirectory()}; 
+	std::string assets{ workingDir + "/assets/" }; //path to assets
 	
 	Font fontCalculator = LoadFontEx((assets + "Symbola-modified.ttf").data(), 30, 0, 10378);
-	Color operatorColour{ 247, 184, 1, 255 };
+	Color operatorColour{ 247, 184, 1, 255 }; //colour for operator buttons
+
+	double timer{}; //timer for button colour change
+	double previousTime{}; //previous time for button colour change
 	
-	double timer{};
-	double previousTime{};
 	
-	
-	std::array<Button, 23> calcButton
+	std::array<Button, 23> calcButton //array of buttons for calculator which will be drawn on the screen
 	{ {
 		//row 1
 		{145, 700, 130, 90, "0"},	//number 0
@@ -56,7 +56,7 @@ int main()
 		{415, 225, 130, 90, Constants::backspace, Color{255, 16, 40, 255}, BLACK},	// backspace
 	} };
 	constexpr auto calcButtonSize{ std::ssize(calcButton) };
-	Calculator session{ {1, 20, 542, 100 }, {480, 190, 542, 100, true } };
+	Calculator session{ {1, 20, 542, 100 }, {480, 190, 542, 100, true } }; //calculator object holding all logical elements of the calculator
 	
 	Button placeholder{ 10, 700, 130, 90,  "" }; //button added for design purposes, may be used in the future.
 	//loop
@@ -86,23 +86,23 @@ int main()
 			placeholder.colourChange(BLUE);
 		}
 
-		for (std::ptrdiff_t index{ 0 }; index < calcButtonSize; ++index) //draw rectangular buttons then check if the buttons are pressed
+		for (std::ptrdiff_t index{ 0 }; index < calcButtonSize; ++index) //draw rectangular buttons then check if the buttons are pressed (mouse/touch input)
 		{
 			
 			calcButton[index].drawRectButton();
 			calcButton[index].drawTextMiddle(fontCalculator);
 			if (calcButton[index].buttonPressed())
 			{
-				if (session.getCalculatedState())
-					session = Calculator({ 1, 20, 542, 100 }, { 480, 190, 542, 100, true }); //reset calculator to original state
+				if (session.getCalculatedState()) //if the expression is evaluated (and the answer is displayed on the screen), reset the calculator
+					session = Calculator({ 1, 20, 542, 100 }, { 480, 190, 542, 100, true }); //reset calculator to original state because the user pressed a button
 
 				previousTime = timer;
 				calcButton[index].colourChange(RED);
-				session.express(calcButton, index);
+				session.express(calcButton, index); //adds the button text (numbers and operators) to the expression
 
 			}
 		}
-		while (GetKeyPressed() > 0) //check if keyboard button is pressed
+		while (GetKeyPressed() > 0) //check if keyboard button is pressed 
 		{
 			if (session.getCalculatedState())
 				session = Calculator({ 1, 20, 542, 100 }, { 480, 190, 542, 100, true }); //reset calculator to original state
@@ -127,14 +127,14 @@ int main()
 }
 void debug(Calculator& session)
 {
-	std::cout << "session.m_expression.m_text: " << '\n\t';
+	std::cout << "session.m_expression.m_text: ";
 	for (std::ptrdiff_t index{ 0 }; index < session.m_expression.ssize(); ++index)
 	{
 		std::cout <<  session.m_expression[index] << " ";
 	}
 	std::cout << "\n\tsession.m_expression.m_index = (outIndex = " << session.m_expression.m_index.outIndex << ", inIndex = " << session.m_expression.m_index.inIndex << ")";
 	std::cout << "\n\tsession.m_expression.m_endIndex = " << session.m_expression.m_endIndex;
-	std::cout << '\n' << "session.m_output: " << '\n\t';
+	std::cout << '\n' << "session.m_output: ";
 	for (std::ptrdiff_t index{ 0 }; index < std::ssize(session.m_output); ++index)
 	{
 		std::cout << session.m_output[index] << " ";

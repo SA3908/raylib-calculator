@@ -13,7 +13,7 @@ class Calculator
 {
 	friend void debug(Calculator& session);
 public:
-	bool getCalculatedState() const { return m_calculated; }
+	bool getCalculatedState() const { return m_calculated; } //return true if m_expression is evaluated and stored in m_evaluated
 	TextBox& getExpression() { return m_expression; }
 	TextBox& getEvaluated()  { return m_evaluated; }
 	Calculator()

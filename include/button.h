@@ -17,21 +17,21 @@ public:
 	{
 		return ((GetMouseX() >= m_x && GetMouseX() <= (m_x + m_width) && GetMouseY() >= m_y && GetMouseY() < (m_y + m_height) && IsMouseButtonPressed(MOUSE_BUTTON_LEFT) ? true : false));
 	}
-	void colourChange(Color tempColour)
+	void colourChange(Color tempColour) //changes button colour to tempColour
 	{
 		m_colour = tempColour;
 	}
-	void colourChange()
+	void colourChange() //resets button colour to original colour
 	{
 		m_colour = m_buttonColour;
 	}
 
-	void drawRectButton()
+	void drawRectButton() //draws the rectangular button using the given coordinates and dimensions
 	{
 		DrawRectangle(m_x, m_y, m_width, m_height, m_colour);
 		DrawRectangleLines(m_x, m_y, m_width, m_height, BLACK);
 	}
-	void drawTextMiddle(const Font& fontCalculator)
+	void drawTextMiddle(const Font& fontCalculator) //draws the text in the middle of the button
 	{
 		DrawTextEx(fontCalculator, m_text.data(), Vector2(static_cast<float>((m_x + m_width / 2) - MeasureText(m_text.data(), 30)), static_cast<float>((m_y + m_height / 2) - 15)), 30, 10, m_textColour);
 	}
