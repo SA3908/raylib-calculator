@@ -11,7 +11,7 @@ struct IndexPair //iterate through an element of an element within an array
 	std::ptrdiff_t outIndex{};
 };
 
-class TextBox //display, align and manoeuvre through text
+class TextBox //display, align and manoeuvre through text using arrow keys
 {
 	friend void debug(Calculator& session);
 public:
@@ -46,12 +46,12 @@ public:
 	std::vector<std::string>& getText() { return m_text; }
 	const bool endIndex() const { return m_endIndex; }
 
-	void updateIndex(); //ensure that m_index catches up to final value of expression if m_endIndex is true (for calculator logic).
+	void updateIndex(); //ensure that m_index catches up to final value of expression if m_endIndex is true (for calculator logic). This moves the "|" to the end of the expression.
 	void traverseArrowKey(); //if arrow keys are pressed move the " | " left/right. 
 	void drawText(Font& font); //draw m_text on the screen using coordinates given and alignment.
 	
-	void insertIndex(const std::string& ch, const std::vector<std::string>& operList); //insert characters at the indexes of m_index (using calculator logic).
-	void deleteIndex(); //remove character at m_index and modify m_index after the character is deleted
+	void insertIndex(const std::string& ch, const std::vector<std::string>& operList); //insert characters at the indexes of m_index (using calculator logic to handle numbers and operators differently).
+	void deleteIndex(); //remove character at m_index and modify m_index (to move the "|" left) after the character is deleted
 	
 private:
 	const bool elementIsOperator (const std::ptrdiff_t index, const std::vector<std::string>& operList) const;

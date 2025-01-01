@@ -173,9 +173,9 @@ void TextBox::insertIndex(const std::string& ch, const std::vector<std::string>&
 			isOperator = true;
 	}
 
-	if (!isOperator)
+	if (!isOperator) //if ch is not an operator
 	{
-		for (std::ptrdiff_t index{ m_index.outIndex }; index < std::ssize(m_text); ++index)
+		for (std::ptrdiff_t index{ m_index.outIndex }; index < std::ssize(m_text); ++index) // check if the current element is an operator until the end of the expression
 		{
 			if (elementIsOperator(index, operList))
 			{
@@ -231,11 +231,11 @@ void TextBox::insertIndex(const std::string& ch, const std::vector<std::string>&
 	updateIndex();
 }
 
-void TextBox::deleteIndex()
+void TextBox::deleteIndex() 
 {
-	m_text[m_index.outIndex].erase(m_index.inIndex, 1);
-	if (m_index.inIndex == 0 && m_index.outIndex > 0)
-		m_index.outIndex--;
-	else if (m_index.inIndex > 0)
-		m_index.inIndex--;
+	m_text[m_index.outIndex].erase(m_index.inIndex, 1); 
+	if (m_index.inIndex == 0 && m_index.outIndex > 0) //if the current element is empty and there is an element before it
+		m_index.outIndex--; //move to the previous element
+	else if (m_index.inIndex > 0) //if the current element is not empty
+		m_index.inIndex--; //move to the previous character in the current element
 }
