@@ -2,6 +2,9 @@
 
 const bool TextBox::elementIsOperator(const std::ptrdiff_t index, const std::vector<std::string>& operList) const
 {
+	if (m_text.empty()) //if m_text is empty, there is no operator to check
+		return false;
+
 	for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(operList); ++opIndex)
 	{
 		if (m_text[index] == operList[opIndex] || m_text[index] == "(" || m_text[index] == ")")
@@ -175,14 +178,11 @@ void TextBox::insertIndex(const std::string& ch, const std::vector<std::string>&
 
 	if (!isOperator) //if ch is not an operator
 	{
-		for (std::ptrdiff_t index{ m_index.outIndex }; index < std::ssize(m_text); ++index) // check if the current element is an operator until the end of the expression
+		if (elementIsOperator(m_index.outIndex, operList))
 		{
-			if (elementIsOperator(index, operList))
-			{
-				m_index.outIndex = index + 1; //last element (index) is operator, so, push the number to the back
-				break;
-			}
+			m_index.outIndex += 1; //The element (at m_index.outIndex) is an operator which must be kept by itself, so push the number to the back of the expression
 		}
+
 		if (std::ssize(m_text) == m_index.outIndex) //create new element
 		{
 			m_text.push_back(ch);
