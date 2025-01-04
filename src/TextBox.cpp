@@ -169,6 +169,8 @@ void TextBox::drawText(Font& font)
 
 void TextBox::insertIndex(const std::string& ch, const std::vector<std::string>& operList)
 {
+	if (m_index.outIndex == 0 && m_index.inIndex == 0 && m_text.empty())
+		m_endIndex = true;
 	bool isOperator{ false };
 	for (std::ptrdiff_t opIndex{ 0 }; opIndex < std::ssize(operList); ++opIndex)
 	{
@@ -178,9 +180,11 @@ void TextBox::insertIndex(const std::string& ch, const std::vector<std::string>&
 
 	if (!isOperator) //if ch is not an operator
 	{
+		bool currentElementOperator{ false };
 		if (elementIsOperator(m_index.outIndex, operList))
 		{
 			m_index.outIndex += 1; //The element (at m_index.outIndex) is an operator which must be kept by itself, so push the number to the back of the expression
+			currentElementOperator = true;
 		}
 
 		if (std::ssize(m_text) == m_index.outIndex) //create new element
@@ -193,16 +197,23 @@ void TextBox::insertIndex(const std::string& ch, const std::vector<std::string>&
 		{
 			m_text[m_index.outIndex] = ch; //override the empty string element with this number
 		}
-		else if (std::ssize(m_text[m_index.outIndex]) - 1 == m_index.inIndex) //add to existing element
+		else
 		{
-			m_text[m_index.outIndex].push_back(ch.front());
 			if (m_endIndex)
-				++m_index.inIndex;
-		}
-		else if (std::ssize(m_text[m_index.outIndex]) == m_index.inIndex) //adds to existing element but m_index.inIndex did not decrease correctly
-		{
-			m_text[m_index.outIndex].insert(m_index.inIndex, ch);
-			m_index.inIndex++;
+			{
+				m_text[m_index.outIndex].push_back(ch.front());
+				m_index.inIndex++;
+			}
+			else
+			{
+				if (std::ssize(m_text[m_index.outIndex]) - 1 > m_index.inIndex && !currentElementOperator)
+				{
+					m_text[m_index.outIndex].insert(m_index.inIndex + 1, ch);
+					m_index.inIndex++;
+				}
+				else
+					m_text[m_index.outIndex].insert(m_index.inIndex, ch);
+			}
 		}
 	}
 	else if (isOperator)
