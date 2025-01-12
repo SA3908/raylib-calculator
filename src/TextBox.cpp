@@ -246,7 +246,12 @@ void TextBox::deleteIndex()
 {
 	m_text[m_index.outIndex].erase(m_index.inIndex, 1); 
 	if (m_index.inIndex == 0 && m_index.outIndex > 0) //if the current element is empty and there is an element before it
+	{
 		m_index.outIndex--; //move to the previous element
+		m_index.inIndex = std::ssize(m_text[m_index.outIndex]) - 1; //move to the last character in the previous element
+	}
 	else if (m_index.inIndex > 0) //if the current element is not empty
+	{
 		m_index.inIndex--; //move to the previous character in the current element
+	}
 }
