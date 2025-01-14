@@ -227,6 +227,8 @@ void TextBox::insertIndex(const std::string& ch, const std::vector<std::string>&
 			if (std::ssize(m_text[m_index.outIndex + 1]) == 0) //an empty string element exists after the current element.
 			{
 				m_text[m_index.outIndex + 1] = ch; //override the empty string element with this operator.
+				m_index.outIndex++;
+				m_index.inIndex = 0;
 			}
 		}
 		else if (std::ssize(m_text) == m_index.outIndex && (ch == "(" || ch == ")")) //to allow only brackets to be placed at the start of m_text
