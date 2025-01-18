@@ -206,13 +206,11 @@ void TextBox::insertIndex(const std::string& ch, const std::vector<std::string>&
 			}
 			else
 			{
-				if (std::ssize(m_text[m_index.outIndex]) - 1 > m_index.inIndex && !currentElementOperator)
+				if (std::ssize(m_text[m_index.outIndex]) - 1 >= m_index.inIndex && !currentElementOperator)
 				{
 					m_text[m_index.outIndex].insert(m_index.inIndex + 1, ch);
 					m_index.inIndex++;
 				}
-				else
-					m_text[m_index.outIndex].insert(m_index.inIndex, ch);
 			}
 		}
 	}
