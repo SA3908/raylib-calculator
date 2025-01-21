@@ -199,18 +199,20 @@ void TextBox::insertIndex(const std::string& ch, const std::vector<std::string>&
 		}
 		else
 		{
-			if (m_endIndex)
+			if (m_endIndex) //if the cursor is at the end of the expression
 			{
 				m_text[m_index.outIndex].push_back(ch.front());
 				m_index.inIndex++;
 			}
 			else
 			{
-				if (std::ssize(m_text[m_index.outIndex]) - 1 >= m_index.inIndex && !currentElementOperator)
+				if (std::ssize(m_text[m_index.outIndex]) - 1 >= m_index.inIndex && !currentElementOperator) //allows insertion of numbers in the middle of a string element of numbers
 				{
 					m_text[m_index.outIndex].insert(m_index.inIndex + 1, ch);
 					m_index.inIndex++;
 				}
+				else
+					m_text[m_index.outIndex].insert(m_index.inIndex, ch); //allows insertion of numbers at the start of a string element of numbers after an operator.
 			}
 		}
 	}
