@@ -2,11 +2,13 @@
 ## Overview
 This is a simple calculator created as a project programmed in C++ using raylib for the GUI.
 
+<img src="https://github.com/user-attachments/assets/433e31de-371a-421a-b32e-97fff784e2a2" width="300">
 
 
-> **NOTE: I started this project 4 months into learning C++, bugs are expected and do not think too highly of it.**
+> **NOTE: I started this project 4 months into learning C++, bugs are expected and don't place high expectations of this project.**
 ## Features
 - [x] **Evaluate Arithmetics**
+- [X] Supports **multiple** operators 
 - [x] Touch screen & mouse support with **GUI buttons**
 - [x] **Keyboard** and **numpad** support for fast typing
 - [x] Support for **arrow keys** to traverse through the **expression** you are typing
